@@ -115,7 +115,7 @@ export default function Home(): JSX.Element {
               <AlertDialogHeader>
                 <AlertDialogTitle>Settings</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Adjust Gemini AI behavior.
+                  Adjust OpenChat AI behavior.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="grid gap-4 py-4">
