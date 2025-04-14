@@ -2,7 +2,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, Auth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -15,26 +15,37 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-let app;
+let app: any;
 
-try {
-  if (
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
-    process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
-    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
-    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET &&
-    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID &&
-    process.env.NEXT_PUBLIC_FIREBASE_APP_ID
-  ) {
+if (
+  process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+  process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
+  process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
+  process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET &&
+  process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID &&
+  process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+) {
+  try {
     app = initializeApp(firebaseConfig);
-  } else {
-    console.error("Firebase configuration is incomplete. Ensure all environment variables are set.");
-    throw new Error("Firebase configuration is incomplete.  Check environment variables.");
-    // Don't initialize Firebase if config is incomplete
+  } catch (e){
+    console.error("Firebase initialization error", e);
   }
-} catch (e){
-  console.error("Firebase configuration error", e);
+} else {
+  console.warn("Firebase configuration is incomplete. Ensure all environment variables are set. Firebase services will be unavailable.");
+  // Don't initialize Firebase if config is incomplete
 }
 
 
-export const auth = app ? getAuth(app) : null;
+let auth: Auth | null = null;
+
+if (app) {
+  try {
+    auth = getAuth(app);
+  } catch (e) {
+    console.error("Error getting Firebase Auth instance:", e);
+  }
+} else {
+  console.warn("Firebase Auth not initialized due to missing Firebase configuration.");
+}
+
+export { auth };
