@@ -1,6 +1,8 @@
 import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
+import Link from 'next/link';
+import {Toaster} from '@/components/ui/toaster';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,9 +27,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <nav className="p-4 border-b">
+          <div className="container mx-auto flex justify-between items-center">
+            <Link href="/" className="text-2xl font-bold">OpenChat.Ai</Link>
+            <div>
+              <Link href="/login" className="mr-4">Login</Link>
+              <Link href="/signup">Sign Up</Link>
+            </div>
+          </div>
+        </nav>
         {children}
+        <Toaster />
       </body>
     </html>
   );
 }
-
