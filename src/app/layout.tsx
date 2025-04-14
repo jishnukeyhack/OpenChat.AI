@@ -32,23 +32,25 @@ export default function RootLayout({
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(
-      authUser => {
-        if (authUser) {
-          setUser({
-            uid: authUser.uid,
-            email: authUser.email,
-          });
-        } else {
-          setUser(null);
+    if (auth) {
+      const unsubscribe = auth.onAuthStateChanged(
+        authUser => {
+          if (authUser) {
+            setUser({
+              uid: authUser.uid,
+              email: authUser.email,
+            });
+          } else {
+            setUser(null);
+          }
+        },
+        error => {
+          console.error('Error during auth state change:', error);
         }
-      },
-      error => {
-        console.error('Error during auth state change:', error);
-      }
-    );
+      );
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    }
   }, []);
 
   const handleSignOut = async () => {
@@ -95,5 +97,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
