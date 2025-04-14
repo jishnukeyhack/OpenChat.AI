@@ -27,8 +27,8 @@ if (
 ) {
   try {
     app = initializeApp(firebaseConfig);
-  } catch (e){
-    console.error("Firebase initialization error", e);
+  } catch (e: any){
+    console.error("Firebase initialization error", e.message);
   }
 } else {
   console.warn("Firebase configuration is incomplete. Ensure all environment variables are set. Firebase services will be unavailable.");
@@ -41,8 +41,8 @@ let auth: Auth | null = null;
 if (app) {
   try {
     auth = getAuth(app);
-  } catch (e) {
-    console.error("Error getting Firebase Auth instance:", e);
+  } catch (e: any) {
+    console.error("Error getting Firebase Auth instance:", e.message);
   }
 } else {
   console.warn("Firebase Auth not initialized due to missing Firebase configuration.");

@@ -4,7 +4,7 @@ import {openChat} from '@/ai/flows/initial-prompt-tuning';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
-import {Settings} from 'lucide-react';
+import {Circle} from 'lucide-react';
 import React, {useState, useRef, useEffect} from 'react';
 import {AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger} from "@/components/ui/alert-dialog"
 import {Textarea} from "@/components/ui/textarea"
@@ -101,14 +101,7 @@ export default function Home(): JSX.Element {
             <AlertDialogTrigger asChild>
               <Button variant="ghost" size="icon">
                 {/* Replace Settings icon with Gemini-like icon */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5">
-                  <path d="M12 7C13.6569 7 15 5.65685 15 4C15 2.34315 13.6569 1 12 1C10.3431 1 9 2.34315 9 4C9 5.65685 10.3431 7 12 7Z" fill="currentColor"/>
-                  <path d="M5 14C6.65685 14 8 12.6569 8 11C8 9.34315 6.65685 8 5 8C3.34315 8 2 9.34315 2 11C2 12.6569 3.34315 14 5 14Z" fill="currentColor"/>
-                  <path d="M19 14C20.6569 14 22 12.6569 22 11C22 9.34315 20.6569 8 19 8C17.3431 8 16 9.34315 16 11C16 12.6569 17.3431 14 19 14Z" fill="currentColor"/>
-                  <path d="M12 23C13.6569 23 15 21.6569 15 20C15 18.3431 13.6569 17 12 17C10.3431 17 9 18.3431 9 20C9 21.6569 10.3431 23 12 23Z" fill="currentColor"/>
-                  <path d="M8.62109 9.15234L10.4688 10.5352C11.2734 9.95312 12.0625 9.59375 12.875 9.59375C13.6875 9.59375 14.4766 9.95312 15.2812 10.5352L17.1289 9.15234C16.1641 8.4375 14.9609 8.0625 13.75 8.0625C12.5391 8.0625 11.3359 8.4375 10.3711 9.15234H8.62109Z" fill="currentColor"/>
-                  <path d="M17.1211 14.8477L15.2734 16.2305C14.4688 15.6484 13.6797 15.2891 12.8672 15.2891C12.0547 15.2891 11.2656 15.6484 10.4609 16.2305L8.61328 14.8477C9.57812 14.1328 10.7812 13.7578 11.9922 13.7578C13.2031 13.7578 14.4062 14.1328 15.3711 14.8477H17.1211Z" fill="currentColor"/>
-                </svg>
+                <Circle width="24" height="24" className="h-5 w-5"/>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
