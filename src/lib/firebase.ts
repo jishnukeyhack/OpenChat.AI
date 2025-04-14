@@ -1,7 +1,7 @@
 'use client';
 
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
@@ -17,9 +17,22 @@ const firebaseConfig = {
 // Initialize Firebase
 let app;
 
-if (typeof window !== 'undefined') {
-  app = initializeApp(firebaseConfig);
+if (!getApps().length) {
+  if (
+    !process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
+    !process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ||
+    !process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ||
+    !process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+    !process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ||
+    !process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+  ) {
+    console.error("Firebase configuration is incomplete. Ensure all environment variables are set.");
+    // Don't initialize Firebase if config is incomplete
+  } else {
+    app = initializeApp(firebaseConfig);
+  }
+} else {
+  app = getApps()[0]; // Use existing app if already initialized
 }
 
-export const auth = getAuth(app);
-
+export const auth = app ? getAuth(app) : null;
