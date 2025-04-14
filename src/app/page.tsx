@@ -5,7 +5,7 @@ import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Settings} from 'lucide-react';
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger} from "@/components/ui/alert-dialog"
 import {Textarea} from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
@@ -28,6 +28,7 @@ export default function Home() {
   const [initialPrompt, setInitialPrompt] = useState(
     'You are a helpful AI assistant.'
   );
+  const chatLogRef = useRef<HTMLDivElement>(null);
 
   const { toast } = useToast()
 
@@ -72,12 +73,30 @@ export default function Home() {
     }
   };
 
+  // Scroll to bottom of chat log on new message
+  useEffect(() => {
+    chatLogRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatLog]);
+
+    // Function to handle saving the initial prompt
+    const handleSaveInitialPrompt = () => {
+        toast({
+            title: "Initial prompt saved!",
+            description: "The initial prompt has been successfully updated.",
+        });
+    };
+
+
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-background to-muted rounded-3xl shadow-xl">
       <header className="p-4 border-b border-muted">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-semibold">OpenChat</h1>
-          <AlertDialog>
+          <AlertDialog onOpenChange={(open) => {
+            if (!open) {
+              handleSaveInitialPrompt();
+            }
+          }}>
             <AlertDialogTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Settings className="h-5 w-5" />
@@ -108,7 +127,7 @@ export default function Home() {
               </div>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Save</AlertDialogAction>
+                <AlertDialogAction onClick={handleSaveInitialPrompt}>Save</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -116,7 +135,7 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto flex-grow p-4">
-        <Card className="h-full flex flex-col">
+        <Card className="h-full flex flex-col rounded-2xl">
           <CardHeader>
             <CardTitle>Chat Log</CardTitle>
           </CardHeader>
@@ -125,9 +144,9 @@ export default function Home() {
               {chatLog.map((msg, index) => (
                 <div
                   key={index}
-                  className={`flex flex-col rounded-lg p-3 w-fit max-w-[80%] ${
-                    msg.isUser ? 'bg-secondary ml-auto' : 'bg-muted mr-auto'
-                  }`}
+                  className={`flex flex-col rounded-xl p-3 w-fit max-w-[80%] ${
+                    msg.isUser ? 'bg-primary text-primary-foreground ml-auto' : 'bg-secondary mr-auto'
+                  } transition-all duration-300 ease-in-out`} // Added transition
                 >
                   <p className="text-sm">{msg.text}</p>
                   <time
@@ -138,6 +157,7 @@ export default function Home() {
                   </time>
                 </div>
               ))}
+              <div ref={chatLogRef} />
             </div>
           </CardContent>
         </Card>
@@ -150,14 +170,14 @@ export default function Home() {
             placeholder="Type your message here..."
             value={message}
             onChange={e => setMessage(e.target.value)}
-            className="flex-grow mr-2"
+            className="flex-grow mr-2 rounded-full" // Making input rounded
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 handleSend();
               }
             }}
           />
-          <Button onClick={handleSend}>Send</Button>
+          <Button className="rounded-full" onClick={handleSend}>Send</Button>
         </div>
       </footer>
     </div>
