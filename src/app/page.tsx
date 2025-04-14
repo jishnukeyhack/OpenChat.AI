@@ -92,7 +92,7 @@ export default function Home(): JSX.Element {
     <>
       <div className="flex flex-col h-screen bg-background rounded-3xl shadow-md overflow-hidden">
         <header className="px-6 py-3 border-b border-muted flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight">Gemini</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Open Chat</h1>
           <AlertDialog onOpenChange={(open) => {
             if (!open) {
               handleSaveInitialPrompt();
