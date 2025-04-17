@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import ReactMarkdown from 'react-markdown';
 import { Sun, Moon } from 'lucide-react';
+// import 'react-syntax-highlighter/dist/esm/styles/prism/atom-dark';
 
 interface ChatMessage {
   text: string;
@@ -30,7 +31,7 @@ export default function Home(): JSX.Element {
   const [message, setMessage] = useState('');
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
   const [initialPrompt, setInitialPrompt] = useState(
-    'Hi there! OpenChat, how can I help you?'
+    'Hi there! OpenChat Here How can I assist you today? I\'m ready to answer your questions, provide information, or help in any way I can. Just let me know what you need!'
   );
   const chatLogRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast()
@@ -147,7 +148,7 @@ export default function Home(): JSX.Element {
     <>
       <div className="flex flex-col h-screen bg-background rounded-3xl shadow-md overflow-hidden">
         <header className="px-6 py-3 border-b border-muted flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight">OpenChat</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">OpenChat.Ai</h1>
           <div className="flex items-center space-x-2">
             <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
                 <Button className="rounded-full">
@@ -167,7 +168,7 @@ export default function Home(): JSX.Element {
               <div
                 key={index}
                 className={cn(
-                  "flex flex-col rounded-xl p-4 max-w-[80%] transition-all duration-300 ease-in-out",
+                  "flex flex-col rounded-xl p-4 max-w-fit max-h-fit transition-all duration-300 ease-in-out",
                   msg.isUser
                     ? "bg-primary text-primary-foreground ml-auto rounded-tr-none"
                     : "bg-secondary mr-auto rounded-tl-none"
