@@ -38,7 +38,7 @@ const prompt = ai.definePrompt({
       response: z.string().describe('The AI generated response.'),
     }),
   },
-  prompt: `Hi there! OpenChat, how can I help you?
+  prompt: `Hi there! OpenChat Here  How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need!
 
 {{initialPrompt}}
 
