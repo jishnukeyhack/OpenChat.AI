@@ -2,7 +2,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, Auth } from "firebase/auth";
+import { getAuth, Auth, connectAuthEmulator } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,18 +18,22 @@ const firebaseConfig = {
 let app: any;
 
 try {
-  if (
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
-    process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
-    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
-    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET &&
-    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID &&
-    process.env.NEXT_PUBLIC_FIREBASE_APP_ID
-  ) {
-    app = initializeApp(firebaseConfig);
+  if (!getApps().length) {
+    if (
+      process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+      process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
+      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
+      process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET &&
+      process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID &&
+      process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+    ) {
+      app = initializeApp(firebaseConfig);
+    } else {
+      console.warn("Firebase configuration is incomplete. Ensure all environment variables are set. Firebase services will be unavailable.");
+      // Don't initialize Firebase if config is incomplete
+    }
   } else {
-    console.warn("Firebase configuration is incomplete. Ensure all environment variables are set. Firebase services will be unavailable.");
-    // Don't initialize Firebase if config is incomplete
+    app = getApps()[0]; // Use existing app if already initialized
   }
 } catch (e: any) {
   console.error("Firebase initialization error", e.message);
@@ -40,6 +44,9 @@ let auth: Auth | null = null;
 if (app) {
   try {
     auth = getAuth(app);
+      if (process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST) {
+          connectAuthEmulator(auth, `http://${process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST}`);
+      }
   } catch (e: any) {
     console.error("Error getting Firebase Auth instance:", e.message);
   }
