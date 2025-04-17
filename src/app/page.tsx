@@ -12,7 +12,6 @@ import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import ReactMarkdown from 'react-markdown';
 import { Sun, Moon } from 'lucide-react';
-// import 'react-syntax-highlighter/dist/esm/styles/prism/atom-dark';
 
 interface ChatMessage {
   text: string;
@@ -195,13 +194,25 @@ export default function Home(): JSX.Element {
                  {msg.codeLanguage ? (
                     // <CodeBlock value={msg.text} language={msg.codeLanguage} />
                     <div className="text-sm leading-relaxed">
-                      <ReactMarkdown>
+                      <ReactMarkdown
+                        components={{
+                          a: ({ node, ...props }) => (
+                            <a {...props} style={{ color: 'blue' }} />
+                          ),
+                        }}
+                      >
                         {msg.text}
                       </ReactMarkdown>
                     </div>
                   ) : (
                     <div className="text-sm leading-relaxed">
-                      <ReactMarkdown>
+                      <ReactMarkdown
+                         components={{
+                          a: ({ node, ...props }) => (
+                            <a {...props} style={{ color: 'blue' }} />
+                          ),
+                        }}
+                      >
                         {msg.text}
                       </ReactMarkdown>
                     </div>
