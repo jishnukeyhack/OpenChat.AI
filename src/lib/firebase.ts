@@ -17,24 +17,23 @@ const firebaseConfig = {
 // Initialize Firebase
 let app: any;
 
-if (
-  process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
-  process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
-  process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
-  process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET &&
-  process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID &&
-  process.env.NEXT_PUBLIC_FIREBASE_APP_ID
-) {
-  try {
+try {
+  if (
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+    process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN &&
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET &&
+    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID &&
+    process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+  ) {
     app = initializeApp(firebaseConfig);
-  } catch (e: any){
-    console.error("Firebase initialization error", e.message);
+  } else {
+    console.warn("Firebase configuration is incomplete. Ensure all environment variables are set. Firebase services will be unavailable.");
+    // Don't initialize Firebase if config is incomplete
   }
-} else {
-  console.warn("Firebase configuration is incomplete. Ensure all environment variables are set. Firebase services will be unavailable.");
-  // Don't initialize Firebase if config is incomplete
+} catch (e: any) {
+  console.error("Firebase initialization error", e.message);
 }
-
 
 let auth: Auth | null = null;
 

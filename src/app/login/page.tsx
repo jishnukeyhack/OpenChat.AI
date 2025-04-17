@@ -38,6 +38,14 @@ export default function LoginPage(): JSX.Element {
   });
 
   const handleLogin = async (data: z.infer<typeof FormSchema>) => {
+    if (!auth) {
+            toast({
+                variant: 'destructive',
+                title: 'Authentication Error',
+                description: 'Firebase Authentication is not properly initialized.',
+            });
+            return;
+        }
     try{
       await signInWithEmailAndPassword(auth!, data.email, data.password);
       toast({
@@ -102,6 +110,14 @@ export default function LoginPage(): JSX.Element {
   };
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    if (!auth) {
+            toast({
+                variant: 'destructive',
+                title: 'Authentication Error',
+                description: 'Firebase Authentication is not properly initialized.',
+            });
+            return;
+        }
     try {
         await signInWithEmailAndPassword(auth!, data.email, data.password);
         toast({
@@ -206,6 +222,3 @@ export default function LoginPage(): JSX.Element {
     </div>
   );
 }
-
-
-
