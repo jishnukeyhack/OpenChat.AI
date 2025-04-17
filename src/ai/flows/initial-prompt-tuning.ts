@@ -40,7 +40,10 @@ const prompt = ai.definePrompt({
   },
   prompt: `{{initialPrompt}}
 User: {{{message}}}
-AI: Okay, let's think step by step. First, respond to the user's message in a way that is natural, engaging, and sounds like a human. Break down complex topics into simple and digestible points. Then, provide a well-reasoned and detailed response to the user's request. Format the response with clear paragraphs, bullet points where appropriate, and use conversational language.`,
+AI: Okay, let's think step by step. Respond to the user's message in a way that is natural, engaging, and sounds like a human. \
+Use Markdown formatting to structure your response with headings, bullet points, and code blocks where appropriate. \
+Break down complex topics into simple and digestible points. Provide a well-reasoned and detailed response to the user's request. \
+Format the response with clear paragraphs, bullet points where appropriate, and use conversational language.`,
 });
 
 const openChatFlow = ai.defineFlow<
@@ -57,3 +60,4 @@ const openChatFlow = ai.defineFlow<
     return output!;
   }
 );
+
