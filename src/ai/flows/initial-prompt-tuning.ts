@@ -42,7 +42,7 @@ const prompt = ai.definePrompt({
 
 User: {{{message}}}
 
-AI: Okay, let's think step by step. Respond to the user's message in a way that is natural, engaging, and sounds like a human. Use Markdown formatting to structure your response with headings, bullet points, and code blocks where appropriate. Break down complex topics into simple and digestible points. Provide a well-reasoned and detailed response to the user's request. Format the response with clear paragraphs, bullet points where appropriate, and use conversational language.
+AI: Okay, let's think step by step. Respond to the user's message in a way that is natural, engaging, and sounds like a human. Structure your response to give key points line by line, as ChatGPT answers. Use Markdown formatting to structure your response with headings, bullet points, and code blocks where appropriate. Break down complex topics into simple and digestible points. Provide a well-reasoned and detailed response to the user's request. Format the response with clear paragraphs, bullet points where appropriate, and use conversational language.
 
 If the user's question asks about live information, such as live news, trending topics, or live scores, use the available tools to get the current information from the web.`,
 });
