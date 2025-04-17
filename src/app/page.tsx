@@ -1,3 +1,4 @@
+
 'use client';
 
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
@@ -100,10 +101,8 @@ export default function Home(): JSX.Element {
             }
           }}>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="icon">
-                {/* Replace Settings icon with Gemini-like icon */}
-                <Circle width="24" height="24" className="h-5 w-5"/>
-              </Button>
+              {/* Replace Settings icon with Gemini-like icon */}
+              <Circle width="24" height="24" className="h-5 w-5"/>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -153,7 +152,10 @@ export default function Home(): JSX.Element {
                 </ReactMarkdown>
                 <time
                   dateTime={msg.timestamp}
-                  className="text-xs text-muted-foreground self-end mt-2"
+                  className={cn(
+                    "text-xs self-end mt-2",
+                    msg.isUser ? "text-primary-foreground/70" : "text-muted-foreground" // Change here
+                  )}
                 >
                   {msg.timestamp}
                 </time>
@@ -184,4 +186,5 @@ export default function Home(): JSX.Element {
     </>
   );
 }
+
 
