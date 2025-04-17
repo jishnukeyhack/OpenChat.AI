@@ -12,8 +12,6 @@ import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import ReactMarkdown from 'react-markdown';
 import { Sun, Moon } from 'lucide-react';
-// import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-// import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface ChatMessage {
   text: string;
@@ -27,17 +25,6 @@ function formatTimestamp(date: Date): string {
   const minutes = date.getMinutes().toString().padStart(2, '0');
   return `${hours}:${minutes}`;
 }
-
-// function CodeBlock({ value, language }: { value: string; language?: string }) {
-//   return (
-//     <SyntaxHighlighter
-//       style={atomDark}
-//       language={language || 'javascript'}
-//       children={value as any}
-//       className="rounded-md text-sm"
-//     />
-//   );
-// }
 
 export default function Home(): JSX.Element {
   const [message, setMessage] = useState('');
@@ -188,13 +175,17 @@ export default function Home(): JSX.Element {
               >
                  {msg.codeLanguage ? (
                     // <CodeBlock value={msg.text} language={msg.codeLanguage} />
-                    <ReactMarkdown className="text-sm leading-relaxed">
-                      {msg.text}
-                    </ReactMarkdown>
+                    <div className="text-sm leading-relaxed">
+                      <ReactMarkdown>
+                        {msg.text}
+                      </ReactMarkdown>
+                    </div>
                   ) : (
-                    <ReactMarkdown className="text-sm leading-relaxed">
-                      {msg.text}
-                    </ReactMarkdown>
+                    <div className="text-sm leading-relaxed">
+                      <ReactMarkdown>
+                        {msg.text}
+                      </ReactMarkdown>
+                    </div>
                   )}
                 <time
                   dateTime={msg.timestamp}
@@ -233,4 +224,3 @@ export default function Home(): JSX.Element {
     </>
   );
 }
-
