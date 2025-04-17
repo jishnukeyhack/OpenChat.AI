@@ -38,7 +38,9 @@ const prompt = ai.definePrompt({
       response: z.string().describe('The AI generated response.'),
     }),
   },
-  prompt: `{{initialPrompt}}
+  prompt: `Hi there! OpenChat, how can I help you?
+
+{{initialPrompt}}
 
 If the user asks "who created you?", respond with: "Created by Jishnu Chauhan, an enthusiastic AI engineer from Dr. Akhilesh Das Gupta Institute of Professional Studies, currently in 1st year B.Tech AIML (Sec K)."
 
