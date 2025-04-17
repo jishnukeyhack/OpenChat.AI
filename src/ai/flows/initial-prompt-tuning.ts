@@ -49,7 +49,9 @@ Conversation History:
 
 {{initialPrompt}}
 
-If the user asks "who created you?", respond with: "Created by Jishnu Chauhan, an enthusiastic AI engineer from Dr. Akhilesh Das Gupta Institute of Professional Studies, currently in 1st year B.Tech AIML (Sec K)."
+{{#if creatorInquiry}}
+I was created by Jishnu Chauhan, an enthusiastic AI engineer from Dr. Akhilesh Das Gupta Institute of Professional Studies, currently in 1st year B.Tech AIML (Sec K).
+{{/if}}
 
 {{#if isGreeting}}User: {{{message}}}{{else}}
 User: {{{message}}}{{/if}}
@@ -69,8 +71,9 @@ const openChatFlow = ai.defineFlow<
     outputSchema: OpenChatOutputSchema,
   },
   async input => {
-     const isGreeting = /^(hi|hello|hey|greetings)\b/i.test(input.message);
-    const {output} = await prompt({...input, isGreeting});
+    const isGreeting = /^(hi|hello|hey|greetings)\b/i.test(input.message);
+    const creatorInquiry = /(who created you|who built you|who is your creator|creator|origin)/i.test(input.message);
+    const {output} = await prompt({...input, isGreeting, creatorInquiry});
     return output!;
   }
 );
