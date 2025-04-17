@@ -4,7 +4,7 @@ import {openChat} from '@/ai/flows/initial-prompt-tuning';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
-import {Circle} from 'lucide-react';
+import {Circle, Search} from 'lucide-react';
 import React, {useState, useRef, useEffect} from 'react';
 import {AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger} from "@/components/ui/alert-dialog"
 import {Textarea} from "@/components/ui/textarea"
@@ -97,6 +97,17 @@ export default function Home(): JSX.Element {
         });
     };
 
+    const handleSearch = () => {
+        // Implement your search logic here
+        // This might involve calling an external search API
+        // and displaying the results in a modal or sidebar
+        toast({
+            title: "Search Initiated!",
+            description: "Searching the web for real-time updates...",
+        });
+        console.log("Search initiated for:", message);
+    };
+
 
   return (
     <>
@@ -187,6 +198,9 @@ export default function Home(): JSX.Element {
                 }
               }}
             />
+             <Button className="rounded-full" onClick={handleSearch}>
+               <Search />
+             </Button>
             <Button className="rounded-full" onClick={handleSend}>Send</Button>
           </div>
         </footer>
