@@ -146,7 +146,7 @@ export default function Home(): JSX.Element {
 
   return (
     <>
-      <div className="flex flex-col h-screen bg-background rounded-3xl shadow-md overflow-hidden">
+      <div className="flex flex-col h-screen bg-background rounded-3xl shadow-md overflow-hidden md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto">
         <header className="px-6 py-3 border-b border-muted flex items-center justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">OpenChat.Ai</h1>
           <div className="flex items-center space-x-2">
@@ -171,7 +171,8 @@ export default function Home(): JSX.Element {
                   "flex flex-col rounded-xl p-4 max-w-fit max-h-fit transition-all duration-300 ease-in-out",
                   msg.isUser
                     ? "bg-primary text-primary-foreground ml-auto rounded-tr-none"
-                    : "bg-secondary mr-auto rounded-tl-none"
+                    : "bg-secondary mr-auto rounded-tl-none",
+                  msg.isUser ? 'md:max-w-[80%]' : 'md:max-w-[80%]' // Responsive max-width
                 )}
               >
                  {msg.codeLanguage ? (
