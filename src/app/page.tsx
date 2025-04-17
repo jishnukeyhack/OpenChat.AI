@@ -39,10 +39,22 @@ export default function Home(): JSX.Element {
     // Chat memory
   const [conversationHistory, setConversationHistory] = useState<string>('');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
     setTheme(storedTheme === 'dark' ? 'dark' : 'light');
+
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 768); // Adjust breakpoint as needed
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -146,7 +158,12 @@ export default function Home(): JSX.Element {
 
   return (
     <>
-      <div className="flex flex-col h-screen bg-background rounded-3xl shadow-md overflow-hidden md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto">
+      <div
+        className={cn(
+          "flex flex-col h-screen bg-background rounded-3xl shadow-md overflow-hidden mx-auto",
+          isLargeScreen ? 'md:w-3/4 lg:w-2/3 xl:w-1/2' : 'w-full'
+        )}
+      >
         <header className="px-6 py-3 border-b border-muted flex items-center justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">OpenChat.Ai</h1>
           <div className="flex items-center space-x-2">
