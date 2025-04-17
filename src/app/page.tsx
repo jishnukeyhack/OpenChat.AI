@@ -1,4 +1,3 @@
-
 'use client';
 
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
@@ -200,3 +199,4 @@ export default function Home(): JSX.Element {
     </>
   );
 }
+
