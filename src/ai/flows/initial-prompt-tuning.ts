@@ -38,7 +38,9 @@ const prompt = ai.definePrompt({
       response: z.string().describe('The AI generated response.'),
     }),
   },
-  prompt: `{{initialPrompt}}\nUser: {{{message}}}\nAI: `,
+  prompt: `{{initialPrompt}}
+User: {{{message}}}
+AI: Let's think step by step. First, respond to the user's message in a way that is natural, engaging, and sounds like a human. Then, provide a well-reasoned and detailed response to the user's request.`,
 });
 
 const openChatFlow = ai.defineFlow<
