@@ -2,7 +2,6 @@
 
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
 import {Button} from '@/components/ui/button';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Circle, Search} from 'lucide-react';
 import React, {useState, useRef, useEffect} from 'react';
@@ -29,9 +28,6 @@ function formatTimestamp(date: Date): string {
 export default function Home(): JSX.Element {
   const [message, setMessage] = useState('');
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
-  const [initialPrompt, setInitialPrompt] = useState(
-    'Hi there! OpenChat Here How can I assist you today? I\'m ready to answer your questions, provide information, or help in any way I can. Just let me know what you need!'
-  );
   const chatLogRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast()
 
@@ -86,7 +82,6 @@ export default function Home(): JSX.Element {
     try {
       const aiResponse = await openChat({
         message: message,
-        initialPrompt: initialPrompt,
         conversationHistory: conversationHistory,
       });
 
@@ -134,14 +129,6 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     chatLogRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatLog]);
-
-    // Function to handle saving the initial prompt
-    const handleSaveInitialPrompt = () => {
-        toast({
-            title: "Initial prompt saved!",
-            description: "The initial prompt has been successfully updated.",
-        });
-    };
 
     const handleSearch = () => {
         // Implement your search logic here
@@ -192,7 +179,6 @@ export default function Home(): JSX.Element {
                 )}
               >
                  {msg.codeLanguage ? (
-                    // <CodeBlock value={msg.text} language={msg.codeLanguage} />
                     <div className="text-sm leading-relaxed">
                       <ReactMarkdown
                         components={{
