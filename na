@@ -1,0 +1,4 @@
+```tool_code
+echo "To use gateway with firebase use below command"
+echo "firebase hosting:channel:deploy mychannel"
+```
