@@ -11,6 +11,7 @@ import {Textarea} from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import ReactMarkdown from 'react-markdown';
+import { Sun, Moon } from 'lucide-react';
 
 interface ChatMessage {
   text: string;
@@ -35,6 +36,25 @@ export default function Home(): JSX.Element {
 
     // Chat memory
     const [conversationHistory, setConversationHistory] = useState<string>('');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    setTheme(storedTheme === 'dark' ? 'dark' : 'light');
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => {
+      const newTheme = prevTheme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('theme', newTheme);
+      return newTheme;
+    });
+  };
+
+  useEffect(() => {
+    document.body.setAttribute('data-theme', theme);
+  }, [theme]);
+
 
   const handleSend = async () => {
     if (!message.trim()) return;
@@ -114,44 +134,17 @@ export default function Home(): JSX.Element {
       <div className="flex flex-col h-screen bg-background rounded-3xl shadow-md overflow-hidden">
         <header className="px-6 py-3 border-b border-muted flex items-center justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">Open Chat</h1>
-          <AlertDialog onOpenChange={(open) => {
-            if (!open) {
-              handleSaveInitialPrompt();
-            }
-          }}>
-            <AlertDialogTrigger asChild>
-              {/* Replace Settings icon with Gemini-like icon */}
-              <Circle width="24" height="24" className="h-5 w-5"/>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Settings</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Adjust OpenChat AI behavior.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="initialPrompt"
-                    className="text-right text-sm font-medium leading-none"
-                  >
-                    Initial Prompt
-                  </label>
-                  <Textarea
-                    id="initialPrompt"
-                    value={initialPrompt}
-                    onChange={e => setInitialPrompt(e.target.value)}
-                    className="col-span-3"
-                  />
-                </div>
-              </div>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleSaveInitialPrompt}>Save</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <div className="flex items-center space-x-2">
+            <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
+                <Button className="rounded-full">
+                    Search
+                </Button>
+            </a>
+            <Button onClick={toggleTheme} size="icon" variant="ghost">
+              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+          </ div>
         </header>
 
         <main className="flex-grow p-6 overflow-y-auto">
@@ -199,11 +192,6 @@ export default function Home(): JSX.Element {
               }}
             />
             
-            <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
-                <Button className="rounded-full">
-                    Typed Search
-                </Button>
-            </a>
             <Button className="rounded-full" onClick={handleSend}>Send</Button>
           </div>
         </footer>
@@ -211,3 +199,4 @@ export default function Home(): JSX.Element {
     </>
   );
 }
+
