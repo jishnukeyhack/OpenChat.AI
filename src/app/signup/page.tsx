@@ -98,6 +98,24 @@ export default function SignupPage(): JSX.Element {
     }
   };
 
+ const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    try {
+        await createUserWithEmailAndPassword(auth!, data.email, data.password);
+        toast({
+            title: 'Signup Successful',
+            description: 'Your account has been created.',
+        });
+        router.push('/'); // Redirect to home page after signup
+    } catch (error: any) {
+        toast({
+            variant: 'destructive',
+            title: 'Signup Failed',
+            description: error.message,
+        });
+        console.error('Signup failed:', error);
+    }
+  };
+
  return (
     <div className="flex justify-center items-center h-screen bg-background">
       <div className="w-full max-w-md">
