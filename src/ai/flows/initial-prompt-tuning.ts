@@ -49,7 +49,7 @@ User: {{{message}}}{{/if}}
 
 AI: Okay, let's think step by step. Your response should be natural, engaging, and sound like a human. Give key points line by line, like ChatGPT answers. Use Markdown formatting to structure your response with headings, bullet points, and code blocks where appropriate. Break down complex topics into simple and digestible points. Provide a well-reasoned and detailed response to the user's request. Format the response with clear paragraphs, bullet points where appropriate, and use conversational language.
 Make sure every sentence should have a proper and clear meaning. 
-If the user's question asks about live information, such as live news, trending topics, or live scores, use the available tools to get the current information from the web.`,
+If the user's question asks about live information, such as live news, trending topics, or live scores, use the available tools to get the current information from the web. Be elaborate and descriptive.`,
 });
 
 const openChatFlow = ai.defineFlow<
@@ -67,5 +67,7 @@ const openChatFlow = ai.defineFlow<
     return output!;
   }
 );
+
+    
 
     
