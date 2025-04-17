@@ -10,6 +10,7 @@ import {AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, A
 import {Textarea} from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
+import ReactMarkdown from 'react-markdown';
 
 interface ChatMessage {
   text: string;
@@ -27,7 +28,7 @@ export default function Home(): JSX.Element {
   const [message, setMessage] = useState('');
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
   const [initialPrompt, setInitialPrompt] = useState(
-    'You are a helpful AI assistant.'
+    'Hi there! OpenChat, how can I help you?'
   );
   const chatLogRef = useRef<HTMLDivElement>(null);
 
@@ -147,7 +148,9 @@ export default function Home(): JSX.Element {
                     : "bg-secondary mr-auto rounded-tl-none"
                 )}
               >
-                <p className="text-sm leading-relaxed">{msg.text}</p>
+                <ReactMarkdown className="text-sm leading-relaxed">
+                  {msg.text}
+                </ReactMarkdown>
                 <time
                   dateTime={msg.timestamp}
                   className="text-xs text-muted-foreground self-end mt-2"
