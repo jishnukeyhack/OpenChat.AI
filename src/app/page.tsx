@@ -35,7 +35,7 @@ export default function Home(): JSX.Element {
   const { toast } = useToast()
 
     // Chat memory
-    const [conversationHistory, setConversationHistory] = useState<string>('');
+  const [conversationHistory, setConversationHistory] = useState<string>('');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
@@ -74,6 +74,7 @@ export default function Home(): JSX.Element {
       const aiResponse = await openChat({
         message: message,
         initialPrompt: initialPrompt,
+        conversationHistory: conversationHistory,
       });
 
       const aiChatMessage: ChatMessage = {
@@ -199,4 +200,3 @@ export default function Home(): JSX.Element {
     </>
   );
 }
-

@@ -13,6 +13,7 @@ import {z} from 'genkit';
 const OpenChatInputSchema = z.object({
   message: z.string().describe('The user message to be processed.'),
   initialPrompt: z.string().describe('The custom initial prompt to tune the AI personality.'),
+  conversationHistory: z.string().optional().describe('The history of the conversation thus far.'),
 });
 export type OpenChatInput = z.infer<typeof OpenChatInputSchema>;
 
@@ -31,6 +32,7 @@ const prompt = ai.definePrompt({
     schema: z.object({
       message: z.string().describe('The user message to be processed.'),
       initialPrompt: z.string().describe('The custom initial prompt to tune the AI personality.'),
+      conversationHistory: z.string().optional().describe('The history of the conversation thus far.'),
     }),
   },
   output: {
@@ -39,6 +41,11 @@ const prompt = ai.definePrompt({
     }),
   },
   prompt: `{{#if isGreeting}}Hi there! OpenChat Here How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need!{{else}}{{{initialPrompt}}}{{/if}}
+
+{{#if conversationHistory}}
+Conversation History:
+{{{conversationHistory}}}
+{{/if}}
 
 {{initialPrompt}}
 
@@ -67,7 +74,3 @@ const openChatFlow = ai.defineFlow<
     return output!;
   }
 );
-
-    
-
-    
