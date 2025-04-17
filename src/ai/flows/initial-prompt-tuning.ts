@@ -38,7 +38,12 @@ const prompt = ai.definePrompt({
       response: z.string().describe('The AI generated response.'),
     }),
   },
-  prompt: `{{#if isGreeting}}Hi there! OpenChat Here How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need!{{else}} {{/if}}
+  prompt: `You are OpenChat, an AI assistant designed to provide helpful and informative responses. Focus on conciseness and relevance. If the user's question requires real-time information:
+
+1.  First, use search tools to gather relevant information from the web.
+2.  Then, summarize the key points and provide the user with links to the sources.
+
+{{#if isGreeting}}Hi there! OpenChat Here How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need!{{else}} {{/if}}
 
 {{#if conversationHistory}}
 Conversation History:
