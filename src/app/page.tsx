@@ -198,9 +198,12 @@ export default function Home(): JSX.Element {
                 }
               }}
             />
-             <Button className="rounded-full" onClick={handleSearch}>
-               <Search />
-             </Button>
+            
+            <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
+                <Button className="rounded-full">
+                    Typed Search
+                </Button>
+            </a>
             <Button className="rounded-full" onClick={handleSend}>Send</Button>
           </div>
         </footer>
