@@ -61,6 +61,14 @@ export default function SignupPage(): JSX.Element {
   };
 
   const handleOAuthSignup = async (provider: string) => {
+    if (!auth) {
+        toast({
+            variant: 'destructive',
+            title: 'Authentication Error',
+            description: 'Firebase Authentication is not properly initialized.',
+        });
+        return;
+    }
     let oAuthProvider;
     switch (provider) {
       case 'google':
@@ -82,7 +90,7 @@ export default function SignupPage(): JSX.Element {
     }
 
     try {
-      await signInWithPopup(auth!, oAuthProvider);
+      await signInWithPopup(auth, oAuthProvider);
       toast({
         title: 'Signup Successful',
         description: `You have successfully signed up with ${provider}.`,
@@ -187,3 +195,4 @@ export default function SignupPage(): JSX.Element {
     </div>
   );
 }
+
