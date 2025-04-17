@@ -1,4 +1,3 @@
-
 'use client';
 
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
@@ -32,8 +31,10 @@ export default function Home(): JSX.Element {
     'Hi there! OpenChat, how can I help you?'
   );
   const chatLogRef = useRef<HTMLDivElement>(null);
-
   const { toast } = useToast()
+
+    // Chat memory
+    const [conversationHistory, setConversationHistory] = useState<string>('');
 
   const handleSend = async () => {
     if (!message.trim()) return;
@@ -44,6 +45,10 @@ export default function Home(): JSX.Element {
       timestamp: formatTimestamp(new Date()),
     };
     setChatLog(prev => [...prev, userMessage]);
+
+    // Update conversation history
+    const updatedConversationHistory = conversationHistory + `\nUser: ${message}`;
+    setConversationHistory(updatedConversationHistory);
 
     try {
       const aiResponse = await openChat({
@@ -57,6 +62,9 @@ export default function Home(): JSX.Element {
         timestamp: formatTimestamp(new Date()),
       };
       setChatLog(prev => [...prev, aiChatMessage]);
+
+            // Update conversation history with AI response
+            setConversationHistory(prev => prev + `\nAI: ${aiResponse.response}`);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -186,5 +194,3 @@ export default function Home(): JSX.Element {
     </>
   );
 }
-
-
