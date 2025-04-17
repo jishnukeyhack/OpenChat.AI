@@ -148,7 +148,7 @@ export default function Home(): JSX.Element {
                     : "bg-secondary mr-auto rounded-tl-none"
                 )}
               >
-                <ReactMarkdown className="text-sm leading-relaxed">
+                <ReactMarkdown>
                   {msg.text}
                 </ReactMarkdown>
                 <time
@@ -184,3 +184,4 @@ export default function Home(): JSX.Element {
     </>
   );
 }
+
