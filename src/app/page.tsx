@@ -1,3 +1,4 @@
+
 'use client';
 
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
@@ -133,7 +134,7 @@ export default function Home(): JSX.Element {
     <>
       <div className="flex flex-col h-screen bg-background rounded-3xl shadow-md overflow-hidden">
         <header className="px-6 py-3 border-b border-muted flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight">Open Chat</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">OpenChat</h1>
           <div className="flex items-center space-x-2">
             <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
                 <Button className="rounded-full">
