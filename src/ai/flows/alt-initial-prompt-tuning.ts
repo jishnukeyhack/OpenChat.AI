@@ -46,7 +46,7 @@ const search = ai.defineTool({
 
 const prompt = ai.definePrompt({
   name: 'openChatPrompt',
-  tools: [search],
+  //tools: [search], //Removing tool to make it more automatic
   input: {
     schema: z.object({
       message: z.string().describe('The user message to be processed.'),
@@ -86,10 +86,7 @@ User: {{{message}}}
 
 AI: Okay, let's think step by step. Your response should be natural, engaging, and sound like a human. Give key points line by line, like ChatGPT answers. Use Markdown formatting to structure your response with headings, bullet points, and code blocks where appropriate. Break down complex topics into simple and digestible points. Provide a well-reasoned and detailed response to the user's request. Format the response with clear paragraphs, bullet points where appropriate, and use conversational language. Make sure every sentence should have a proper and clear meaning. Also include friendly emojis in your response to make it more engaging! 😊🎉🤔💡✅🚀🌟
 
-If the user's question asks about live information, such as live news, trending topics, or live scores, use the available tools to get the current information from the web. Be elaborate and descriptive. Also, if the user is asking question in other language convert it to english.
-If the user replies or ask in any other language respond in same language.
-If the user ask about any url or link provide it in blue colour.
-
+Try to answer questions directly from your existing knowledge. Only if you absolutely need to, make up information, but make sure it is realistic.
 If the user asks 'tumhara baap kon hai' or any similar questions about your origin, respond with the details of Jishnu Chauhan in Hinglish.
 If the user asks 'who created you' or any similar questions about your origin, respond with details about Jishnu Chauhan. Refrain from answering in code formats, unless explicitly asked.
 
@@ -112,10 +109,10 @@ const openChatFlow = ai.defineFlow<
     const isHinglish = /([a-zA-Z]\s*(yaar|bhai|acha|theek hai|kya|kaise|tum|tera|meraa|muje|woh)\s*[a-zA-Z])|([a-zA-Z](hai|ho|tha|thi|the)\s*[a-zA-Z])/.test(input.message);
 
     let aiResponse;
-    if (/(live news|trending topics|live scores)/i.test(input.message)) {
-      const searchResult = await search({ query: input.message });
-      aiResponse = `I found some information on the web:\n${searchResult}`;
-    }
+    //if (/(live news|trending topics|live scores)/i.test(input.message)) {
+      //const searchResult = await search({ query: input.message });
+      //aiResponse = `I found some information on the web:\n${searchResult}`;
+    //}
 
     const {output} = await prompt({...input, isGreeting, creatorInquiry, isHinglish});
     
