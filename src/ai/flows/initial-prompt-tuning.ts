@@ -1,11 +1,3 @@
-// 'use server';
-/**
- * @fileOverview This file defines a Genkit flow for OpenChat, incorporating various features
- * such as Hinglish support, real-time information retrieval, and creator details.
- *
- * - openChatFlow - The main flow function that takes user input and generates AI responses.
- */
-
 'use server';
 
 import {ai} from '@/ai/ai-instance';
@@ -105,7 +97,7 @@ const openChatFlow = ai.defineFlow<
     outputSchema: OpenChatOutputSchema,
   },
   async input => {
-    const isGreeting = /^(hi|hello|hey|greetings|namaste|kem cho|kaise ho|sat sri akal)\b/i.test(input.message);
+    const isGreeting = /^(hi|hello|hey|greetings|namaste|majama|kaise ho|sat sri akal)\b/i.test(input.message);
     const creatorInquiry = /(who created you|who built you|who is your creator|creator|origin|tumhara baap kon hai)/i.test(input.message);
     const isHinglish = /([a-zA-Z]\s*(yaar|bhai|acha|theek hai|kya|kaise|tum|tera|meraa|muje|woh)\s*[a-zA-Z])|([a-zA-Z](hai|ho|tha|thi|the)\s*[a-zA-Z])/.test(input.message);
 
