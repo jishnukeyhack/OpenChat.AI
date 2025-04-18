@@ -76,12 +76,12 @@ export default function Home(): JSX.Element {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the selected file
   const [imageUrl, setImageUrl] = useState('');
-
-    const [isRecording, setIsRecording] = useState(false);
-    const [audioURL, setAudioURL] = useState('');
-    const [transcription, setTranscription] = useState('');
-    const mediaRecorder = useRef<MediaRecorder | null>(null);
-    const audioChunks = useRef<Blob[]>([]);
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioURL, setAudioURL] = useState('');
+  const [transcription, setTranscription] = useState('');
+  const mediaRecorder = useRef<MediaRecorder | null>(null);
+  const audioChunks = useRef<Blob[]>([]);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -178,6 +178,9 @@ export default function Home(): JSX.Element {
 
       // Update conversation history with AI response
       setConversationHistory(prev => prev + `\nAI: ${aiResponse}`);
+
+      //Text-to-speech
+       playAudio(responseText);
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -198,6 +201,27 @@ export default function Home(): JSX.Element {
       setImageUrl('');
     }
   };
+
+    const playAudio = async (text: string) => {
+        setIsSpeaking(true);
+        try {
+            const speech = new SpeechSynthesisUtterance();
+            speech.text = "OpenChat: " + text;
+            speech.volume = 1;
+            speech.rate = 1;
+            speech.pitch = 1;
+            window.speechSynthesis.speak(speech);
+            speech.onend = () => setIsSpeaking(false);
+        } catch (error: any) {
+            console.error("Error during text-to-speech:", error);
+            toast({
+                variant: 'destructive',
+                title: 'Audio Playback Error',
+                description: error.message,
+            });
+            setIsSpeaking(false);
+        }
+    };
 
 
   // Scroll to bottom of chat log on new message
@@ -343,6 +367,8 @@ export default function Home(): JSX.Element {
     const startRecording = async () => {
         setIsRecording(true);
         audioChunks.current = [];
+            playAudio("OpenChat Here 👋 How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need!");
+
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -361,6 +387,7 @@ export default function Home(): JSX.Element {
                 const transcribedText = await transcribeAudio(audioBlob);
                 setMessage(transcribedText);
                 // You can then send this transcribedText to your chat API
+                 handleSend();
             };
 
             mediaRecorder.current.start();
@@ -604,3 +631,4 @@ export default function Home(): JSX.Element {
     </>
   );
 }
+
