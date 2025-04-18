@@ -3,7 +3,7 @@
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
-import {Circle, Search, Plus, ImagePlus, File as FileIcon} from 'lucide-react';
+import {Circle, Search, Plus, ImagePlus, File as FileIcon, Mic} from 'lucide-react';
 import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {
   AlertDialog,
@@ -76,6 +76,12 @@ export default function Home(): JSX.Element {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the selected file
   const [imageUrl, setImageUrl] = useState('');
+
+    const [isRecording, setIsRecording] = useState(false);
+    const [audioURL, setAudioURL] = useState('');
+    const [transcription, setTranscription] = useState('');
+    const mediaRecorder = useRef<MediaRecorder | null>(null);
+    const audioChunks = useRef<Blob[]>([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -331,6 +337,80 @@ export default function Home(): JSX.Element {
     }
   }, []);
 
+    const startRecording = async () => {
+        setIsRecording(true);
+        audioChunks.current = [];
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder.current = new MediaRecorder(stream);
+
+            mediaRecorder.current.ondataavailable = (event) => {
+                audioChunks.current.push(event.data);
+            };
+
+            mediaRecorder.current.onstop = async () => {
+                const audioBlob = new Blob(audioChunks.current, { type: 'audio/webm' });
+                const url = URL.createObjectURL(audioBlob);
+                setAudioURL(url);
+                setIsRecording(false);
+                // Call function to send audio to OpenAI and get transcription
+                const transcribedText = await transcribeAudio(audioBlob);
+                setMessage(transcribedText);
+                // You can then send this transcribedText to your chat API
+            };
+
+            mediaRecorder.current.start();
+        } catch (err) {
+            console.error("Error accessing microphone:", err);
+            setIsRecording(false);
+            toast({
+                variant: "destructive",
+                title: "Microphone Error",
+                description: "Failed to access microphone. Please check permissions."
+            });
+        }
+    };
+
+    const stopRecording = () => {
+        if (mediaRecorder.current && mediaRecorder.current.state === "recording") {
+            mediaRecorder.current.stop();
+        }
+    };
+
+    const transcribeAudio = async (audioBlob: Blob): Promise<string> => {
+        // Replace with your actual OpenAI API key
+        const apiKey = 'YOUR_OPENAI_API_KEY';
+
+        const formData = new FormData();
+        formData.append('file', audioBlob, 'recording.webm');
+        formData.append('model', 'whisper-1');
+
+        try {
+            const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error(`Transcription failed: ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            return data.text;
+        } catch (error: any) {
+            console.error("Error transcribing audio:", error);
+            toast({
+                variant: "destructive",
+                title: "Transcription Error",
+                description: "Failed to transcribe audio. Please check your API key and network connection."
+            });
+            return '';
+        }
+    };
   return (
     <>
       <div
@@ -494,6 +574,14 @@ export default function Home(): JSX.Element {
                   </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+              <Button
+                  variant="ghost"
+                  size="icon"
+                  className="ml-2"
+                  onClick={isRecording ? stopRecording : startRecording}
+              >
+                  <Mic className="h-4 w-4 text-muted-foreground" />
+              </Button>
             <input
               type="file"
               ref={fileInputRef}
