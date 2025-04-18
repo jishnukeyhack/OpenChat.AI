@@ -370,6 +370,12 @@ export default function Home(): JSX.Element {
     }
   }, []);
 
+    useEffect(() => {
+        // Clear chat log on component mount (page refresh)
+        localStorage.removeItem('chatLog');
+        setChatLog([]);
+    }, []);
+
     const toggleVoice = () => {
         setVoiceEnabled(prev => {
             const newValue = !prev;
