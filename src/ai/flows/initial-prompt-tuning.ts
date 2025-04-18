@@ -138,3 +138,4 @@ async function storeInteraction(userMessage: string, aiResponse: string): Promis
   // const interactionData = { userMessage, aiResponse, timestamp: Date.now() };
   // await db.collection('interactions').add(interactionData);
 }
+
