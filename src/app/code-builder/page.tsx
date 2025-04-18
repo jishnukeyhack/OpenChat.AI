@@ -4,23 +4,33 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {generateCode} from '@/ai/flows/code-builder-tuning';
 
 const CodeBuilderPage = () => {
   const [prompt, setPrompt] = useState('');
+  const [language, setLanguage] = useState('');
   const [codeResult, setCodeResult] = useState<string | null>(null);
   const [generatingCode, setGeneratingCode] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
+  useEffect(() => {
+    if (searchParams) {
+      const promptParam = searchParams.get('prompt');
+      if (promptParam) {
+        setPrompt(String(promptParam));
+      }
+    }
+  }, [searchParams]);
 
-  const generateCodeFromPrompt = async (prompt: string) => {
+  const generateCodeFromPrompt = async () => {
     setGeneratingCode(true);
     setCodeResult(null);
     try {
-      const response = await generateCode({prompt});
+      const response = await generateCode({prompt, language});
 
       setCodeResult(response.code);
     } catch (error: any) {
@@ -46,7 +56,13 @@ const CodeBuilderPage = () => {
           onChange={(e) => setPrompt(e.target.value)}
           className="mb-2"
         />
-        <Button onClick={() => generateCodeFromPrompt(prompt)} disabled={generatingCode} className="mb-4">
+        <Textarea
+          placeholder="Enter the programming language (optional)..."
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+          className="mb-2"
+        />
+        <Button onClick={generateCodeFromPrompt} disabled={generatingCode} className="mb-4">
           {generatingCode ? "Generating..." : "Generate Code"}
         </Button>
         {codeResult && (
