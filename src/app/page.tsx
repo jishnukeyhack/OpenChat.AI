@@ -21,6 +21,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {useSearchParams} from 'next/navigation';
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useTheme } from "@/hooks/use-theme";
 
 
 interface ChatMessage {
@@ -46,14 +47,11 @@ export default function Home(): JSX.Element {
 
     // Chat memory
   const [conversationHistory, setConversationHistory] = useState<string>('');
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { theme, setTheme } = useTheme();
   const [isLargeScreen, setIsLargeScreen] = useState(false);
 
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem('theme');
-    setTheme(storedTheme === 'dark' ? 'dark' : 'light');
-
     const handleResize = () => {
       setIsLargeScreen(window.innerWidth >= 768); // Adjust breakpoint as needed
     };
@@ -67,11 +65,7 @@ export default function Home(): JSX.Element {
   }, []);
 
   const toggleTheme = () => {
-    setTheme(prevTheme => {
-      const newTheme = prevTheme === 'light' ? 'dark' : 'light';
-      localStorage.setItem('theme', newTheme);
-      return newTheme;
-    });
+    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
   useEffect(() => {
@@ -266,4 +260,3 @@ export default function Home(): JSX.Element {
     </>
   );
 }
-
