@@ -1,4 +1,3 @@
-
 'use client';
 
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
@@ -178,9 +177,8 @@ export default function Home(): JSX.Element {
         codeLanguage: codeLanguage,
       };
       setChatLog(prev => [...prev, aiChatMessage]);
-
-      // Update conversation history with AI response
-      setConversationHistory(prev => prev + `\nAI: ${aiResponse}`);
+      //Update chat memory: append the user and ai messages
+      setConversationHistory(prev => prev + `\nUser: ${userMessageText}\nAI: ${responseText}`);
 
       //Text-to-speech
       if (voiceEnabled) {
