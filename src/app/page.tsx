@@ -173,6 +173,8 @@ export default function Home(): JSX.Element {
   };
 
   const handleCodeGenerate = () => {
+     // Store the current chat log in localStorage
+     localStorage.setItem('chatLog', JSON.stringify(chatLog));
     router.push(`/code-builder?prompt=${encodeURIComponent(message)}`);
   };
 
@@ -199,6 +201,14 @@ export default function Home(): JSX.Element {
       fileInputRef.current.value = '';
     }
   };
+
+   // Load chat log from localStorage on component mount
+   useEffect(() => {
+    const storedChatLog = localStorage.getItem('chatLog');
+    if (storedChatLog) {
+      setChatLog(JSON.parse(storedChatLog));
+    }
+  }, []);
 
   return (
     <>
@@ -353,3 +363,4 @@ export default function Home(): JSX.Element {
     </>
   );
 }
+

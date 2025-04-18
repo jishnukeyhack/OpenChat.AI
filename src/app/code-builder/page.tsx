@@ -21,6 +21,14 @@ const CodeBuilderPage = () => {
   const searchParams = useSearchParams();
   const { theme } = useTheme();
   const [previousCode, setPreviousCode] = useState('');
+    // Retrieve the chatLog from localStorage
+    const [chatLog, setChatLog] = useState(() => {
+      if (typeof window !== 'undefined') {
+        const storedChatLog = localStorage.getItem('chatLog');
+        return storedChatLog ? JSON.parse(storedChatLog) : [];
+      }
+      return [];
+    });
 
   useEffect(() => {
     if (searchParams) {
@@ -85,4 +93,3 @@ const CodeBuilderPage = () => {
 };
 
 export default CodeBuilderPage;
-
