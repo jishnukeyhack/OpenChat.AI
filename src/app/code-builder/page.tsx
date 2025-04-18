@@ -4,31 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {generateCode} from '@/ai/flows/code-builder-tuning';
 
-interface CodeBuilderPageProps {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-const CodeBuilderPage: React.FC<CodeBuilderPageProps> = ({searchParams}) => {
+const CodeBuilderPage = () => {
   const [prompt, setPrompt] = useState('');
   const [codeResult, setCodeResult] = useState<string | null>(null);
   const [generatingCode, setGeneratingCode] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-
-  const searchParamsHook = useSearchParams();
-
-  useEffect(() => {
-    if (searchParamsHook) {
-      const promptValue = searchParamsHook.get('prompt');
-      if(promptValue){
-        setPrompt(String(promptValue));
-      }
-    }
-  }, [searchParamsHook]);
 
 
   const generateCodeFromPrompt = async (prompt: string) => {
@@ -50,12 +35,6 @@ const CodeBuilderPage: React.FC<CodeBuilderPageProps> = ({searchParams}) => {
       setGeneratingCode(false);
     }
   };
-
-  useEffect(() => {
-    if(prompt){
-      generateCodeFromPrompt(prompt);
-    }
-  }, [prompt]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
