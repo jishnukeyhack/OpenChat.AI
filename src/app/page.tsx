@@ -192,7 +192,7 @@ export default function Home(): JSX.Element {
                       <div
                           key={index}
                           className={cn(
-                              "flex flex-col rounded-xl p-4 max-w-fit max-h-fit transition-all duration-300 ease-in-out",
+                              "flex flex-col rounded-xl p-4 max-w-fit max-h-fit transition-all duration-300 ease-in-out break-words",
                               msg.isUser
                                   ? "bg-primary text-primary-foreground ml-auto rounded-tr-none"
                                   : "bg-secondary mr-auto rounded-tl-none",
@@ -203,7 +203,7 @@ export default function Home(): JSX.Element {
                               <SyntaxHighlighter
                                   language={msg.codeLanguage}
                                   style={theme === 'dark' ? dark : atomDark}
-                                  className="text-sm leading-relaxed"
+                                  className="text-sm leading-relaxed rounded-md overflow-x-auto"
                               >
                                   {msg.text}
                               </SyntaxHighlighter>
