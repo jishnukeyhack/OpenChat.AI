@@ -47,6 +47,7 @@ const prompt = ai.definePrompt({
     schema: z.object({
       message: z.string().describe('The user message to be processed.'),
       conversationHistory: z.string().optional().describe('The history of the conversation thus far.'),
+       isGreeting: z.boolean().optional().describe('Whether the user message is a greeting.'),
     }),
   },
   output: {
@@ -56,7 +57,11 @@ const prompt = ai.definePrompt({
   },
   prompt: `You are OpenChat, an AI assistant designed to provide helpful and informative responses. Focus on conciseness and relevance. 
 
+{{#if isGreeting}}
 Hi there! OpenChat Here How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need! 
+{{else}}
+Hi there! OpenChat Here How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need! 
+{{/if}}
 
 {{#if conversationHistory}}
 Conversation History:
