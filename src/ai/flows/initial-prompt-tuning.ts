@@ -48,6 +48,7 @@ const prompt = ai.definePrompt({
       message: z.string().describe('The user message to be processed.'),
       conversationHistory: z.string().optional().describe('The history of the conversation thus far.'),
        isGreeting: z.boolean().optional().describe('Whether the user message is a greeting.'),
+        creatorInquiry: z.boolean().optional().describe('Whether the user is asking about the creator.'),
     }),
   },
   output: {
