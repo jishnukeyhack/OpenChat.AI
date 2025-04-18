@@ -19,7 +19,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-
+import {useSearchParams} from 'next/navigation';
 
 
 interface ChatMessage {
@@ -41,6 +41,7 @@ export default function Home(): JSX.Element {
   const chatLogRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast()
   const router = useRouter();
+  const searchParams = useSearchParams();
 
     // Chat memory
   const [conversationHistory, setConversationHistory] = useState<string>('');
@@ -90,11 +91,12 @@ export default function Home(): JSX.Element {
     // Update conversation history
     const updatedConversationHistory = conversationHistory + `\nUser: ${message}`;
     setConversationHistory(updatedConversationHistory);
-
+    const isGreeting = /^(hi|hello|hey|greetings)\b/i.test(message);
     try {
       const aiResponse = await openChat({
         message: message,
         conversationHistory: updatedConversationHistory,
+        isGreeting: isGreeting
       });
 
             // Extract code language and code block from response
