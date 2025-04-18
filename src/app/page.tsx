@@ -193,6 +193,43 @@ export default function Home(): JSX.Element {
         title: 'File Uploaded',
         description: `Analyzing ${file.name}...`,
       });
+
+      // Create FormData to send the file
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('message', message); // Include the current message
+
+      try {
+        const response = await fetch('/api/analyze-file', {
+          method: 'POST',
+          body: formData,
+        }).then(res => res.json());
+
+        const aiChatMessage: ChatMessage = {
+          text: response.analysis, // Display AI analysis
+          isUser: false,
+          timestamp: formatTimestamp(new Date()),
+        };
+        setChatLog(prev => [...prev, aiChatMessage]);
+      } catch (error: any) {
+        toast({
+          variant: 'destructive',
+          title: 'File Analysis Error',
+          description: error.message,
+        });
+        console.error('File analysis failed:', error);
+        const errorChatMessage: ChatMessage = {
+          text: 'Sorry, I encountered an error analyzing the file.',
+          isUser: false,
+          timestamp: formatTimestamp(new Date()),
+        };
+        setChatLog(prev => [...prev, errorChatMessage]);
+      } finally {
+        // Clear the input field and selected file
+        setMessage('');
+        setSelectedFile(null);
+      }
+
       // Placeholder for image analysis or document processing
       console.log('Performing analysis on:', file.name);
     }
