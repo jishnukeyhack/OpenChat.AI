@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {generateCode} from '@/ai/flows/code-builder-tuning';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useTheme } from "@/hooks/use-theme";
 
 const CodeBuilderPage = () => {
   const [prompt, setPrompt] = useState('');
@@ -16,6 +19,7 @@ const CodeBuilderPage = () => {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (searchParams) {
@@ -67,9 +71,13 @@ const CodeBuilderPage = () => {
         </Button>
         {codeResult && (
           <div className="mt-4 overflow-auto">
-            <pre className="bg-gray-100 p-2 rounded-md">
-              <code>{codeResult}</code>
-            </pre>
+            <SyntaxHighlighter
+              language={language || 'javascript'}
+              style={theme === 'dark' ? dark : atomDark}
+              className="rounded-md overflow-x-auto"
+            >
+              {codeResult}
+            </SyntaxHighlighter>
           </div>
         )}
         <Button onClick={() => router.back()} variant="outline">
