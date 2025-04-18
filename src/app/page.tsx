@@ -16,6 +16,8 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { useRouter } from 'next/navigation';
+
 
 interface ChatMessage {
   text: string;
@@ -35,13 +37,12 @@ export default function Home(): JSX.Element {
   const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
   const chatLogRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast()
+  const router = useRouter();
 
     // Chat memory
   const [conversationHistory, setConversationHistory] = useState<string>('');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [isLargeScreen, setIsLargeScreen] = useState(false);
-  const [generatingCode, setGeneratingCode] = useState(false);
-  const [codeResult, setCodeResult] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -149,40 +150,8 @@ export default function Home(): JSX.Element {
         console.log("Search initiated for:", message);
     };
 
-    const generateCode = async (prompt: string) => {
-      setGeneratingCode(true);
-      setCodeResult(null);
-      try {
-          // Replace with your actual code generation endpoint
-          const response = await fetch('/api/generate-code', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ prompt }),
-          });
-
-          if (!response.ok) {
-              throw new Error(`Code generation failed: ${response.status} ${response.statusText}`);
-          }
-
-          const data = await response.json();
-          setCodeResult(data.code);
-      } catch (error: any) {
-          toast({
-              variant: "destructive",
-              title: "Code Generation Error",
-              description: error.message,
-          });
-          console.error('Code generation failed:', error);
-          setCodeResult('Error generating code.');
-      } finally {
-          setGeneratingCode(false);
-      }
-  };
-
   const handleCodeGenerate = () => {
-    generateCode(message);
+    router.push(`/code-builder?prompt=${encodeURIComponent(message)}`);
   }
 
 
@@ -212,7 +181,7 @@ export default function Home(): JSX.Element {
             direction="horizontal"
             className="h-[calc(100%-100px)]"
         >
-            <ResizablePanel defaultSize={70}>
+            <ResizablePanel defaultSize={100}>
                 <main className="flex-grow p-6 overflow-y-auto">
                     <div className="space-y-4">
                         {chatLog.map((msg, index) => (
@@ -266,28 +235,6 @@ export default function Home(): JSX.Element {
                     </div>
                 </main>
             </ResizablePanel>
-            <ResizableHandle className="bg-muted" />
-            <ResizablePanel defaultSize={30}>
-                <aside className="flex flex-col p-4">
-                    <h2 className="text-lg font-semibold mb-2">Code Builder</h2>
-                    <Textarea
-                        placeholder="Describe what you want to build..."
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        className="mb-2"
-                    />
-                    <Button onClick={handleCodeGenerate} disabled={generatingCode}>
-                        {generatingCode ? "Generating..." : "Generate Code"}
-                    </Button>
-                    {codeResult && (
-                        <div className="mt-4 overflow-auto">
-                            <pre className="bg-gray-100 p-2 rounded-md">
-                                <code>{codeResult}</code>
-                            </pre>
-                        </div>
-                    )}
-                </aside>
-            </ResizablePanel>
         </ResizablePanelGroup>
 
         <footer className="p-6 border-t border-muted">
@@ -306,9 +253,11 @@ export default function Home(): JSX.Element {
             />
             
             <Button className="rounded-full" onClick={handleSend}>Send</Button>
+             <Button className="rounded-full" onClick={handleCodeGenerate}>Code</Button>
           </div>
         </footer>
       </div>
     </>
   );
 }
+

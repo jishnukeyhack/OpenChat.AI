@@ -1,0 +1,93 @@
+'use client';
+
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+interface CodeBuilderPageProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+const CodeBuilderPage: React.FC<CodeBuilderPageProps> = ({searchParams}) => {
+  const [prompt, setPrompt] = useState('');
+  const [codeResult, setCodeResult] = useState<string | null>(null);
+  const [generatingCode, setGeneratingCode] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (searchParams && searchParams['prompt']) {
+      setPrompt(String(searchParams['prompt']));
+    }
+  }, [searchParams]);
+
+
+  const generateCode = async (prompt: string) => {
+    setGeneratingCode(true);
+    setCodeResult(null);
+    try {
+      const response = await fetch('/api/generate-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Code generation failed: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setCodeResult(data.code);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Code Generation Error",
+        description: error.message,
+      });
+      console.error('Code generation failed:', error);
+      setCodeResult('Error generating code.');
+    } finally {
+      setGeneratingCode(false);
+    }
+  };
+
+  useEffect(() => {
+    if(prompt){
+      generateCode(prompt);
+    }
+  }, [prompt]);
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+      <h1 className="text-2xl font-semibold mb-4">Code Builder</h1>
+      <div className="w-full max-w-2xl p-4">
+        <Textarea
+          placeholder="Describe what you want to build..."
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          className="mb-2"
+        />
+        <Button onClick={() => generateCode(prompt)} disabled={generatingCode} className="mb-4">
+          {generatingCode ? "Generating..." : "Generate Code"}
+        </Button>
+        {codeResult && (
+          <div className="mt-4 overflow-auto">
+            <pre className="bg-gray-100 p-2 rounded-md">
+              <code>{codeResult}</code>
+            </pre>
+          </div>
+        )}
+        <Button onClick={() => router.back()} variant="outline">
+          Back to Chat
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default CodeBuilderPage;
