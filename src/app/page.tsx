@@ -3,7 +3,7 @@
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
-import {Circle, Search} from 'lucide-react';
+import {Circle, Search, Plus} from 'lucide-react';
 import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger} from "@/components/ui/alert-dialog"
 import {Textarea} from "@/components/ui/textarea"
@@ -22,7 +22,8 @@ import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/style
 import {useSearchParams} from 'next/navigation';
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useTheme } from "@/hooks/use-theme";
-
+// import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+// import { storage } from "@/lib/firebase";
 
 interface ChatMessage {
   text: string;
@@ -49,6 +50,7 @@ export default function Home(): JSX.Element {
   const [conversationHistory, setConversationHistory] = useState<string>('');
   const { theme, setTheme } = useTheme();
   const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export default function Home(): JSX.Element {
     // Update conversation history
     const updatedConversationHistory = conversationHistory + `\nUser: ${message}`;
     setConversationHistory(updatedConversationHistory);
-    const isGreeting = /^(hi|hello|hey|greetings)\b/i.test(message);
+    const isGreeting = /^(hi|hello|hey|greetings|namaste|kem cho|kaise ho|sat sri akal)\b/i.test(message);
     try {
       const aiResponse = await fetch('/api/alt-chat', {
           method: 'POST',
@@ -160,6 +162,28 @@ export default function Home(): JSX.Element {
   const handleCodeGenerate = () => {
     router.push(`/code-builder?prompt=${encodeURIComponent(message)}`);
   }
+
+  const handleFileSelect = () => {
+      if (fileInputRef.current) {
+          fileInputRef.current.click();
+      }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+          toast({
+              title: "File Uploaded",
+              description: `Analyzing ${file.name}...`,
+          });
+          // Placeholder for image analysis or document processing
+          console.log("Performing analysis on:", file.name);
+      }
+      // Reset the input
+      if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+      }
+  };
 
 
   return (
@@ -261,6 +285,20 @@ export default function Home(): JSX.Element {
             
             <Button className="rounded-full" onClick={handleSend}>Send</Button>
              <Button className="rounded-full" onClick={handleCodeGenerate}>Code</Button>
+               <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleFileSelect}
+                  className="ml-2"
+              >
+                  <Plus className="h-4 w-4 text-muted-foreground" />
+              </Button>
+              <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileUpload}
+              />
           </div>
         </footer>
       </div>
