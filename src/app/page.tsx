@@ -244,7 +244,13 @@ export default function Home(): JSX.Element {
               placeholder="Type your message here..."
               value={message}
               onChange={e => setMessage(e.target.value)}
-              className="flex-grow mr-3 rounded-full"
+              className={cn(
+                "flex-grow mr-3 rounded-full",
+                "focus:outline-none focus:ring-2 focus:ring-rgb-border" // Apply the rgb-border class on focus
+              )}
+              style={{
+                '--rgb-border': 'linear-gradient(to right, red, green, blue)' // Define the rgb-border variable with the gradient
+              }}
               onKeyDown={e => {
                 if (e.key === 'Enter') {
                   handleSend();
