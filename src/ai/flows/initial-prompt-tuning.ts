@@ -18,25 +18,8 @@ export async function openChat(input: OpenChatInput): Promise<OpenChatOutput> {
   return openChatFlow(input);
 }
 
-const search = ai.defineTool({
-  name: 'search',
-  description: 'Searches the web for relevant information, including live news, trending topics, and live scores. Returns links to the source websites.',
-  inputSchema: z.object({
-    query: z.string().describe('The search query.')
-  }),
-  outputSchema: z.string()
-}, async input => {
-  // Simulate web search with links.
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  console.log(`Simulating search for: ${input.query}`);
-  return `Search results for ${input.query}:
-  - Mock Result 1: [Link 1](https://example.com/result1)
-  - Mock Result 2: [Link 2](https://example.com/result2)`;
-});
-
 const prompt = ai.definePrompt({
   name: 'openChatPrompt',
-  tools: [search],
   input: {
     schema: z.object({
       message: z.string().describe('The user message to be processed.'),
@@ -74,10 +57,10 @@ Created by Jishnu Chauhan, an enthusiastic AI engineer from Dr. Akhilesh Das Gup
 
 User: {{{message}}}
 
-AI: Okay, let's think step by step. Your response should be natural, engaging, and sound like a human. Give key points line by line, like ChatGPT answers. Use Markdown formatting to structure your response with headings, bullet points, and code blocks where appropriate. Break down complex topics into simple and digestible points. Provide a well-reasoned and detailed response to the user's request. Format the response with clear paragraphs, bullet points where appropriate, and use conversational language. Make sure every sentence should have a proper and clear meaning. Also include friendly emojis in your response to make it more engaging! 😊🎉🤔💡✅🚀🌟
+AI: Okay, let's think step by step. Your response should be natural, engaging, and sound like a human. Give key points line by line, like ChatGPT answers. Use Markdown formatting to structure your response with headings, bullet points, and code blocks where appropriate. Break down complex topics into simple and digestible points. Provide a well-reasoned and detailed response to the user's request. Format the response with clear paragraphs, bullet points where appropriate, and use conversational language. Make sure every sentence should have a proper and clear meaning. Also include friendly emojis in your response! 😊🎉🤔💡✅🚀🌟
 
-If the user's question asks about live information, such as live news, trending topics, or live scores, use the available tools to get the current information from the web. Be elaborate and descriptive. Also, if the user is asking question in other language convert it to english.
-If the user replies or ask in any other language respond in same language.
+If the user's question asks about live information, such as live news, trending topics, or live scores, make sure to give the current information from the web by performing a search. Be elaborate and descriptive and provide links in blue color.
+If the user replies or asks in any other language respond in same language.
 If the user ask about any url or link provide it in blue colour.
 
 If the user asks 'tumhara baap kon hai' or any similar questions about your origin, respond with the details of Jishnu Chauhan in Hinglish.
@@ -101,12 +84,6 @@ const openChatFlow = ai.defineFlow<
     const creatorInquiry = /(who created you|who built you|who is your creator|creator|origin|tumhara baap kon hai)/i.test(input.message);
     const isHinglish = /([a-zA-Z]\s*(yaar|bhai|acha|theek hai|kya|kaise|tum|tera|meraa|muje|woh)\s*[a-zA-Z])|([a-zA-Z](hai|ho|tha|thi|the)\s*[a-zA-Z])/.test(input.message);
 
-    let aiResponse;
-    if (/(live news|trending topics|live scores)/i.test(input.message)) {
-      const searchResult = await search({ query: input.message });
-      aiResponse = `I found some information on the web:\n${searchResult}`;
-    }
-
     const {output} = await prompt({...input, isGreeting, creatorInquiry, isHinglish});
     
     // Auto-learning: Store interaction and potentially adjust prompts
@@ -119,9 +96,7 @@ const openChatFlow = ai.defineFlow<
       console.error('Failed to store interaction:', error);
     }
     
-    return {
-      response: aiResponse || output!.response
-    };
+    return output!;
   }
 );
 
@@ -138,3 +113,4 @@ async function storeInteraction(userMessage: string, aiResponse: string): Promis
   // const interactionData = { userMessage, aiResponse, timestamp: Date.now() };
   // await db.collection('interactions').add(interactionData);
 }
+
