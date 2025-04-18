@@ -406,8 +406,8 @@ export default function Home(): JSX.Element {
                   <span className="sr-only">Toggle Voice</span>
               </Button>
               <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
-              <Button className="rounded-full">Search</Button>
-            </a>
+                <Button className="rounded-full">Search</Button>
+              </a>
             <Button onClick={toggleTheme} size="icon" variant="ghost">
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
               <span className="sr-only">Toggle theme</span>
@@ -576,4 +576,3 @@ export default function Home(): JSX.Element {
     </>
   );
 }
-
