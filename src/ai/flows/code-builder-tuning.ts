@@ -40,7 +40,7 @@ const prompt = ai.definePrompt({
 
 Prompt: {{{prompt}}}
 
-AI: ```javascript`,
+AI:`,
 });
 
 const generateCodeFlow = ai.defineFlow<
@@ -54,6 +54,6 @@ const generateCodeFlow = ai.defineFlow<
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    return {code: '```javascript\n' + output!.code + '\n```'};
   }
 );
