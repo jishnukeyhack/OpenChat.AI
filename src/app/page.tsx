@@ -242,10 +242,11 @@ export default function Home(): JSX.Element {
     }
   };
 
-  const analyzeSelectedImage = async (imageSource: string) => {
+  const analyzeSelectedImage = async (imageSource: string, fileType: string) => {
     try {
       const analysisResult = await analyzeFile({
         fileUrl: imageSource,
+        fileType: fileType,
       });
       const aiChatMessage: ChatMessage = {
         text: analysisResult.analysis, // Display AI analysis
@@ -289,7 +290,7 @@ export default function Home(): JSX.Element {
     }
     setSelectedFile(file);
       const imageUrl = URL.createObjectURL(file);
-      analyzeSelectedImage(imageUrl);
+      analyzeSelectedImage(imageUrl, file.type);
     toast({
       title: 'File Uploaded',
       description: `Analyzing ${file.name}...`,
