@@ -38,7 +38,7 @@ const prompt = ai.definePrompt({
       code: z.string().describe('The AI generated code.'),
     }),
   },
-  prompt: `You are a code generation AI.  You will be given a prompt that describes the code to generate, and the language to use.  You will respond with the code, making sure to include proper syntax highlighting. Do not include any other information other than the code.
+  prompt: `You are a code generation AI. You will be given a prompt that describes the code to generate, and the language to use. Generate the code quickly and efficiently. You will respond with the code, making sure to include proper syntax highlighting. Do not include any other information other than the code.
 
 Prompt: {{{prompt}}}
 Language: {{{language}}}
