@@ -3,7 +3,7 @@
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
-import {Circle, Search, Plus} from 'lucide-react';
+import {Circle, Search, Plus, ImagePlus, File as FileIcon} from 'lucide-react';
 import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {
   AlertDialog,
@@ -37,8 +37,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-// import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-// import { storage } from "@/lib/firebase";
+import {analyzeImage} from '@/ai/flows/analyze-file-flow'; // Import analyzeImage
 
 interface ChatMessage {
   text: string;
@@ -52,6 +51,15 @@ function formatTimestamp(date: Date): string {
   const minutes = date.getMinutes().toString().padStart(2, '0');
   return `${hours}:${minutes}`;
 }
+
+const isValidImageUrl = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
 
 export default function Home(): JSX.Element {
   const [message, setMessage] = useState('');
@@ -67,6 +75,7 @@ export default function Home(): JSX.Element {
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the selected file
+  const [imageUrl, setImageUrl] = useState('');
 
   useEffect(() => {
     const handleResize = () => {
@@ -153,6 +162,8 @@ export default function Home(): JSX.Element {
       setChatLog(prev => [...prev, errorChatMessage]);
     } finally {
       setMessage(''); // Clear the input field
+      setImageUrl('');
+      setSelectedFile(null);
     }
   };
 
@@ -184,51 +195,46 @@ export default function Home(): JSX.Element {
     }
   };
 
+  const analyzeSelectedImage = async (imageSource: string) => {
+    try {
+      const analysisResult = await analyzeImage({ imageUrl: imageSource });
+      const aiChatMessage: ChatMessage = {
+        text: analysisResult.analysis, // Display AI analysis
+        isUser: false,
+        timestamp: formatTimestamp(new Date()),
+      };
+      setChatLog(prev => [...prev, aiChatMessage]);
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'File Analysis Error',
+        description: error.message,
+      });
+      console.error('File analysis failed:', error);
+      const errorChatMessage: ChatMessage = {
+        text: 'Sorry, I encountered an error analyzing the file.',
+        isUser: false,
+        timestamp: formatTimestamp(new Date()),
+      };
+      setChatLog(prev => [...prev, errorChatMessage]);
+    } finally {
+      // Clear the input field and selected file
+      setMessage('');
+      setSelectedFile(null);
+      setImageUrl('');
+    }
+  };
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setSelectedFile(file); // Set the selected file state
-
+      setSelectedFile(file);
+        const imageUrl = URL.createObjectURL(file);
+        analyzeSelectedImage(imageUrl);
       toast({
         title: 'File Uploaded',
         description: `Analyzing ${file.name}...`,
       });
-
-      // Create FormData to send the file
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('message', message); // Include the current message
-
-      try {
-        const response = await fetch('/api/analyze-file', {
-          method: 'POST',
-          body: formData,
-        }).then(res => res.json());
-
-        const aiChatMessage: ChatMessage = {
-          text: response.analysis, // Display AI analysis
-          isUser: false,
-          timestamp: formatTimestamp(new Date()),
-        };
-        setChatLog(prev => [...prev, aiChatMessage]);
-      } catch (error: any) {
-        toast({
-          variant: 'destructive',
-          title: 'File Analysis Error',
-          description: error.message,
-        });
-        console.error('File analysis failed:', error);
-        const errorChatMessage: ChatMessage = {
-          text: 'Sorry, I encountered an error analyzing the file.',
-          isUser: false,
-          timestamp: formatTimestamp(new Date()),
-        };
-        setChatLog(prev => [...prev, errorChatMessage]);
-      } finally {
-        // Clear the input field and selected file
-        setMessage('');
-        setSelectedFile(null);
-      }
 
       // Placeholder for image analysis or document processing
       console.log('Performing analysis on:', file.name);
@@ -238,6 +244,22 @@ export default function Home(): JSX.Element {
       fileInputRef.current.value = '';
     }
   };
+
+    const handleImageUrlSubmit = async () => {
+        if (imageUrl && isValidImageUrl(imageUrl)) {
+            analyzeSelectedImage(imageUrl);
+            toast({
+                title: 'Analyzing Image URL',
+                description: `Analyzing image from ${imageUrl}...`,
+            });
+        } else {
+            toast({
+                variant: 'destructive',
+                title: 'Invalid URL',
+                description: 'Please enter a valid image URL.',
+            });
+        }
+    };
 
    // Load chat log from localStorage on component mount
    useEffect(() => {
@@ -336,6 +358,24 @@ export default function Home(): JSX.Element {
             )}
           </div>
         )}
+            {imageUrl && (
+                <div className="p-4 border-t border-muted">
+                    <p className="text-sm text-muted-foreground">
+                        Image URL: {imageUrl}
+                    </p>
+                    {isValidImageUrl(imageUrl) ? (
+                        <img
+                            src={imageUrl}
+                            alt="Uploaded Image"
+                            className="mt-2 max-h-48 rounded-md"
+                        />
+                    ) : (
+                        <p className="mt-2 text-sm text-muted-foreground">
+                            Invalid Image URL
+                        </p>
+                    )}
+                </div>
+            )}
 
         <footer className="p-6 border-t border-muted">
           <div className="container mx-auto flex items-center">
@@ -376,9 +416,18 @@ export default function Home(): JSX.Element {
                 <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
                   Attach Document
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
-                  Attach File
-                </DropdownMenuItem>
+                  <DropdownMenuItem>
+                      <Input
+                          type="url"
+                          placeholder="Enter Image URL"
+                          value={imageUrl}
+                          onChange={(e) => setImageUrl(e.target.value)}
+                          className="mb-2"
+                      />
+                      <Button onClick={handleImageUrlSubmit} variant="secondary">
+                          Analyze URL
+                      </Button>
+                  </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <input
@@ -400,4 +449,3 @@ export default function Home(): JSX.Element {
     </>
   );
 }
-
