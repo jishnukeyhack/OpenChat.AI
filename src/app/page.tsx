@@ -88,11 +88,18 @@ export default function Home(): JSX.Element {
     setConversationHistory(updatedConversationHistory);
     const isGreeting = /^(hi|hello|hey|greetings)\b/i.test(message);
     try {
-      const aiResponse = await openChat({
-        message: message,
-        conversationHistory: updatedConversationHistory,
-        isGreeting: isGreeting
-      });
+      const aiResponse = await fetch('/api/alt-chat', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              message: message,
+              conversationHistory: updatedConversationHistory,
+              isGreeting: isGreeting
+          }),
+      }).then(res => res.json());
+
 
             // Extract code language and code block from response
             let codeLanguage: string | undefined;
