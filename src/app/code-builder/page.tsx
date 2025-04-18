@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import {generateCode} from '@/ai/flows/code-builder-tuning';
 
 interface CodeBuilderPageProps {
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -30,25 +31,13 @@ const CodeBuilderPage: React.FC<CodeBuilderPageProps> = ({searchParams}) => {
   }, [searchParamsHook]);
 
 
-  const generateCode = async (prompt: string) => {
+  const generateCodeFromPrompt = async (prompt: string) => {
     setGeneratingCode(true);
     setCodeResult(null);
     try {
-      const response = await fetch('/api/generate-code', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt }),
-      });
+      const response = await generateCode({prompt});
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Code generation failed: ${response.status} ${response.statusText} - ${errorData.error || 'No details'}`);
-      }
-
-      const data = await response.json();
-      setCodeResult(data.code);
+      setCodeResult(response.code);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -64,7 +53,7 @@ const CodeBuilderPage: React.FC<CodeBuilderPageProps> = ({searchParams}) => {
 
   useEffect(() => {
     if(prompt){
-      generateCode(prompt);
+      generateCodeFromPrompt(prompt);
     }
   }, [prompt]);
 
@@ -78,7 +67,7 @@ const CodeBuilderPage: React.FC<CodeBuilderPageProps> = ({searchParams}) => {
           onChange={(e) => setPrompt(e.target.value)}
           className="mb-2"
         />
-        <Button onClick={() => generateCode(prompt)} disabled={generatingCode} className="mb-4">
+        <Button onClick={() => generateCodeFromPrompt(prompt)} disabled={generatingCode} className="mb-4">
           {generatingCode ? "Generating..." : "Generate Code"}
         </Button>
         {codeResult && (
