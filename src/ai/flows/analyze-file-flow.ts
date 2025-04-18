@@ -1,54 +1,67 @@
 'use server';
 /**
- * @fileOverview This file defines a Genkit flow for analyzing images.
+ * @fileOverview This file defines a Genkit flow for analyzing images and files.
  *
- * - analyzeImageFlow - The main flow function that takes an image URL and analyzes the image.
- * - AnalyzeImageInput - The input type for the analyzeImageFlow function, which includes the image URL.
- * - AnalyzeImageOutput - The output type for the analyzeImageFlow function, which contains the AI's analysis of the image.
+ * - analyzeFileFlow - The main flow function that takes an image or file URL and analyzes it.
+ * - AnalyzeFileInput - The input type for the analyzeFileFlow function, which includes the image or file URL.
+ * - AnalyzeFileOutput - The output type for the analyzeFileFlow function, which contains the AI's analysis of the image or file.
  */
 
 import {ai} from '@/ai/ai-instance';
 import {z} from 'genkit';
 
-const AnalyzeImageInputSchema = z.object({
-  imageUrl: z.string().describe('The URL of the image to analyze.'),
+const AnalyzeFileInputSchema = z.object({
+  fileUrl: z.string().describe('The URL of the file or image to analyze.'),
+  fileType: z.string().describe('The type of the file (image, pdf, text, etc.)'),
 });
-export type AnalyzeImageInput = z.infer<typeof AnalyzeImageInputSchema>;
+export type AnalyzeFileInput = z.infer<typeof AnalyzeFileInputSchema>;
 
-const AnalyzeImageOutputSchema = z.object({
-  analysis: z.string().describe('The AI generated analysis of the image.'),
+const AnalyzeFileOutputSchema = z.object({
+  analysis: z.string().describe('The AI generated analysis of the image or file.'),
 });
-export type AnalyzeImageOutput = z.infer<typeof AnalyzeImageOutputSchema>;
+export type AnalyzeFileOutput = z.infer<typeof AnalyzeFileOutputSchema>;
 
-export async function analyzeImage(input: AnalyzeImageInput): Promise<AnalyzeImageOutput> {
-  return analyzeImageFlow(input);
+export async function analyzeFile(input: AnalyzeFileInput): Promise<AnalyzeFileOutput> {
+  return analyzeFileFlow(input);
 }
 
 const prompt = ai.definePrompt({
-  name: 'analyzeImagePrompt',
+  name: 'analyzeFilePrompt',
   input: {
     schema: z.object({
-      imageUrl: z.string().describe('The URL of the image to analyze.'),
+      fileUrl: z.string().describe('The URL of the file to analyze.'),
+      fileType: z.string().describe('The type of the file (image, pdf, text, etc.)'),
     }),
   },
   output: {
     schema: z.object({
-      analysis: z.string().describe('The AI generated analysis of the image.'),
+      analysis: z.string().describe('The AI generated analysis of the image or file.'),
     }),
   },
-  prompt: `You are an AI image analysis expert. You will be given the URL of an image, and you will analyze the image and provide a detailed description of the image, including the objects, people, and scenes in the image.
-Image URL: {{{imageUrl}}}
+  prompt: `You are an expert AI assistant specialized in analyzing various types of files.
+You will receive a URL pointing to a file and its type, and your task is to provide a detailed and relevant analysis.
+Ensure your analysis is tailored to the file type. Provide key insights and relevant information.
+Present the analysis in a clear, concise, and human-readable format, focusing on the most important aspects.
+
+Here are some examples on how to analyze files:
+- Images: Identify objects, people, scenes, and provide a description of the visual content.
+- PDF: Summarize the document, extract key information, and identify the main topics.
+- Text files: Analyze the text, identify the main themes, and extract relevant data.
+
+File URL: {{{fileUrl}}}
+File Type: {{{fileType}}}
+
 AI:`,
 });
 
-const analyzeImageFlow = ai.defineFlow<
-  typeof AnalyzeImageInputSchema,
-  typeof AnalyzeImageOutputSchema
+const analyzeFileFlow = ai.defineFlow<
+  typeof AnalyzeFileInputSchema,
+  typeof AnalyzeFileOutputSchema
 >(
   {
-    name: 'analyzeImageFlow',
-    inputSchema: AnalyzeImageInputSchema,
-    outputSchema: AnalyzeImageOutputSchema,
+    name: 'analyzeFileFlow',
+    inputSchema: AnalyzeFileInputSchema,
+    outputSchema: AnalyzeFileOutputSchema,
   },
   async input => {
     const {output} = await prompt(input);

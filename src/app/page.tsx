@@ -37,7 +37,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {analyzeImage} from '@/ai/flows/analyze-file-flow'; // Import analyzeImage
+import {analyzeFile} from '@/ai/flows/analyze-file-flow'; // Import analyzeImage
 
 interface ChatMessage {
   text: string;
@@ -244,7 +244,9 @@ export default function Home(): JSX.Element {
 
   const analyzeSelectedImage = async (imageSource: string) => {
     try {
-      const analysisResult = await analyzeImage({ imageUrl: imageSource });
+      const analysisResult = await analyzeFile({
+        fileUrl: imageSource,
+      });
       const aiChatMessage: ChatMessage = {
         text: analysisResult.analysis, // Display AI analysis
         isUser: false,
