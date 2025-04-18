@@ -19,7 +19,7 @@ import {Textarea} from '@/components/ui/textarea';
 import {useToast} from '@/hooks/use-toast';
 import {cn} from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
-import {Sun, Moon} from 'lucide-react';
+import {Sun, Moon, Volume2, VolumeX} from 'lucide-react';
 import {
   ResizableHandle,
   ResizablePanel,
@@ -77,7 +77,7 @@ export default function Home(): JSX.Element {
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the selected file
   const [imageUrl, setImageUrl] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
-    const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -100,7 +100,7 @@ export default function Home(): JSX.Element {
     document.body.setAttribute('data-theme', theme);
   }, [theme]);
 
-   const handleSend = async () => {
+  const handleSend = async () => {
     if (!message.trim() && !selectedFile) return;
 
     const userMessageText = message.trim() ? message : (selectedFile ? `Uploaded ${selectedFile.name}` : '');
@@ -176,9 +176,7 @@ export default function Home(): JSX.Element {
       setConversationHistory(prev => prev + `\nAI: ${aiResponse}`);
 
       //Text-to-speech
-        if (voiceEnabled) {
-            playAudio(responseText);
-        }
+       
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -200,28 +198,7 @@ export default function Home(): JSX.Element {
     }
   };
 
-    const playAudio = async (text: string) => {
-        setIsSpeaking(true);
-        try {
-            const speech = new SpeechSynthesisUtterance();
-            speech.text = "OpenChat: " + text;
-            speech.volume = 1;
-            speech.rate = 1;
-            speech.pitch = 1;
-            window.speechSynthesis.speak(speech);
-            speech.onend = () => setIsSpeaking(false);
-        } catch (error: any) {
-            console.error("Error during text-to-speech:", error);
-            toast({
-                variant: 'destructive',
-                title: 'Audio Playback Error',
-                description: error.message,
-            });
-            setIsSpeaking(false);
-        }
-    };
-
-
+   
   // Scroll to bottom of chat log on new message
   useEffect(() => {
     chatLogRef.current?.scrollIntoView({behavior: 'smooth'});
@@ -377,15 +354,20 @@ export default function Home(): JSX.Element {
         <header className="px-6 py-3 border-b border-muted flex items-center justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">OpenChat.Ai</h1>
           <div className="flex items-center space-x-2">
-              <Button
+            <Button
                   onClick={toggleVoice}
                   size="icon"
                   variant="ghost"
                   className="ml-2"
               >
-                  {voiceEnabled ? "Voice On" : "Voice Off"}
+                  {voiceEnabled ? (
+                      <Volume2 className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                      <VolumeX className="h-4 w-4 text-muted-foreground" />
+                  )}
+                  <span className="sr-only">Toggle Voice</span>
               </Button>
-            <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
               <Button className="rounded-full">Search</Button>
             </a>
             <Button onClick={toggleTheme} size="icon" variant="ghost">
