@@ -1,10 +1,8 @@
 'use server';
 /**
- * @fileOverview This file defines a Genkit flow for OpenChat that allows users to set a custom initial prompt to tune the AI's personality.
+ * @fileOverview This file defines a Genkit flow for OpenChat.
  *
  * - openChatFlow - The main flow function that takes user input and generates AI responses.
- * - OpenChatInput - The input type for the openChatFlow function, including the user's message and the custom initial prompt.
- * - OpenChatOutput - The output type for the openChatFlow function, which contains the AI's generated response.
  */
 
 import {ai} from '@/ai/ai-instance';
@@ -138,4 +136,5 @@ async function storeInteraction(userMessage: string, aiResponse: string): Promis
   // const interactionData = { userMessage, aiResponse, timestamp: Date.now() };
   // await db.collection('interactions').add(interactionData);
 }
+
 
