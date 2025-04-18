@@ -189,9 +189,23 @@ export default function Home(): JSX.Element {
     router.push(`/code-builder?prompt=${encodeURIComponent(message)}`);
   };
 
-  const handleFileSelect = () => {
+  const handleFileSelect = (fileType: string) => {
     if (fileInputRef.current) {
+      fileInputRef.current.accept = getAcceptedFileTypes(fileType);
       fileInputRef.current.click();
+    }
+  };
+
+  const getAcceptedFileTypes = (fileType: string): string => {
+    switch (fileType) {
+      case 'image':
+        return 'image/png, image/jpeg, image/jpg';
+      case 'document':
+        return '.pdf, .docx, .txt, .rtf';
+      case 'file':
+        return '*/*'; // Allow all file types
+      default:
+        return '*/*';
     }
   };
 
@@ -227,22 +241,43 @@ export default function Home(): JSX.Element {
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-        const imageUrl = URL.createObjectURL(file);
-        analyzeSelectedImage(imageUrl);
-      toast({
-        title: 'File Uploaded',
-        description: `Analyzing ${file.name}...`,
-      });
+    if (!file) return;
 
-      // Placeholder for image analysis or document processing
-      console.log('Performing analysis on:', file.name);
+    const acceptedTypes = fileInputRef.current?.accept;
+    if (acceptedTypes && !isFileTypeSupported(file, acceptedTypes)) {
+      toast({
+        variant: 'destructive',
+        title: 'Unsupported File Type',
+        description: `File type "${file.type}" is not supported. Please upload a file with one of the following types: ${acceptedTypes}`,
+      });
+      return;
     }
+    setSelectedFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      analyzeSelectedImage(imageUrl);
+    toast({
+      title: 'File Uploaded',
+      description: `Analyzing ${file.name}...`,
+    });
+
     // Reset the input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+  };
+
+  const isFileTypeSupported = (file: File, acceptedTypes: string): boolean => {
+    if (acceptedTypes === '*/*') return true;
+    const typesArray = acceptedTypes.split(',').map(type => type.trim());
+    return typesArray.some(acceptedType => {
+      if (acceptedType.startsWith('.')) {
+        // Check file extension
+        return file.name.toLowerCase().endsWith(acceptedType);
+      } else {
+        // Check MIME type
+        return file.type === acceptedType;
+      }
+    });
   };
 
     const handleImageUrlSubmit = async () => {
@@ -403,18 +438,20 @@ export default function Home(): JSX.Element {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={handleFileSelect}
                   className="ml-2"
                 >
                   <Plus className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
-                <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
+                <DropdownMenuItem onClick={() => handleFileSelect('image')}>
                   Attach Image
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
+                <DropdownMenuItem onClick={() => handleFileSelect('document')}>
                   Attach Document
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleFileSelect('file')}>
+                  Attach File
                 </DropdownMenuItem>
                   <DropdownMenuItem>
                       <Input
