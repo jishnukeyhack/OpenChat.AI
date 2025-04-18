@@ -164,7 +164,7 @@ export default function Home(): JSX.Element {
     <>
       <div
         className={cn(
-          "flex flex-col h-screen bg-background rounded-3xl shadow-md overflow-hidden mx-auto",
+          "flex flex-col h-screen bg-background rounded-3xl shadow-md mx-auto",
           isLargeScreen ? 'md:w-3/4 lg:w-2/3 xl:w-1/2' : 'w-full'
         )}
       >
@@ -261,4 +261,3 @@ export default function Home(): JSX.Element {
     </>
   );
 }
-
