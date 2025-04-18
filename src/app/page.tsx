@@ -384,9 +384,9 @@ export default function Home(): JSX.Element {
                   className="ml-2"
               >
                   {voiceEnabled ? (
-                      <Volume2 className="h-4 w-4 text-muted-foreground" />
+                      <Volume2 className="h-6 w-6 text-muted-foreground" />
                   ) : (
-                      <VolumeX className="h-4 w-4 text-muted-foreground" />
+                      <VolumeX className="h-6 w-6 text-muted-foreground" />
                   )}
                   <span className="sr-only">Toggle Voice</span>
               </Button>
