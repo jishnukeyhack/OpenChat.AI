@@ -56,7 +56,7 @@ const prompt = ai.definePrompt({
   },
   prompt: `You are OpenChat, an AI assistant designed to provide helpful and informative responses. Focus on conciseness and relevance. 
 
-{{#if isGreeting}}Hi there! OpenChat Here How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need!{{else}} {{/if}}
+Hi there! OpenChat Here How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need!
 
 {{#if conversationHistory}}
 Conversation History:
@@ -67,8 +67,7 @@ Conversation History:
 I was created by Jishnu Chauhan, an enthusiastic AI engineer from Dr. Akhilesh Das Gupta Institute of Professional Studies, currently in 1st year B.Tech AIML (Sec K).
 {{/if}}
 
-{{#if isGreeting}}User: {{{message}}}{{else}}
-User: {{{message}}}{{/if}}
+User: {{{message}}}
 
 AI: Okay, let's think step by step. Your response should be natural, engaging, and sound like a human. Give key points line by line, like ChatGPT answers. Use Markdown formatting to structure your response with headings, bullet points, and code blocks where appropriate. Break down complex topics into simple and digestible points. Provide a well-reasoned and detailed response to the user's request. Format the response with clear paragraphs, bullet points where appropriate, and use conversational language.
 Make sure every sentence should have a proper and clear meaning. 
@@ -100,8 +99,33 @@ const openChatFlow = ai.defineFlow<
     }
 
     const {output} = await prompt({...input, isGreeting, creatorInquiry});
+    
+    // Auto-learning: Store interaction and potentially adjust prompts
+    // This is a simplified example; more sophisticated methods could be used
+    try {
+      // Store the interaction for later review and prompt adjustments
+      await storeInteraction(input.message, output!.response);
+
+    } catch (error) {
+      console.error('Failed to store interaction:', error);
+    }
+    
     return {
       response: aiResponse || output!.response
     };
   }
 );
+
+/**
+ * Stores user interaction data for auto-learning.
+ * @param userMessage The user's input message.
+ * @param aiResponse The AI's response.
+ */
+async function storeInteraction(userMessage: string, aiResponse: string): Promise<void> {
+  // Implement database storage or file storage logic here
+  // This is a placeholder
+  console.log('Storing interaction:', { userMessage, aiResponse });
+  // Example:
+  // const interactionData = { userMessage, aiResponse, timestamp: Date.now() };
+  // await db.collection('interactions').add(interactionData);
+}
