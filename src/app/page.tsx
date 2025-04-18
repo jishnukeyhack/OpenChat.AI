@@ -77,6 +77,7 @@ export default function Home(): JSX.Element {
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the selected file
   const [imageUrl, setImageUrl] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
+    const [voiceEnabled, setVoiceEnabled] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -175,7 +176,9 @@ export default function Home(): JSX.Element {
       setConversationHistory(prev => prev + `\nAI: ${aiResponse}`);
 
       //Text-to-speech
-       playAudio(responseText);
+        if (voiceEnabled) {
+            playAudio(responseText);
+        }
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -359,6 +362,10 @@ export default function Home(): JSX.Element {
     }
   }, []);
 
+    const toggleVoice = () => {
+        setVoiceEnabled(prev => !prev);
+    };
+
   return (
     <>
       <div
@@ -370,6 +377,14 @@ export default function Home(): JSX.Element {
         <header className="px-6 py-3 border-b border-muted flex items-center justify-between">
           <h1 className="text-2xl font-semibold tracking-tight">OpenChat.Ai</h1>
           <div className="flex items-center space-x-2">
+              <Button
+                  onClick={toggleVoice}
+                  size="icon"
+                  variant="ghost"
+                  className="ml-2"
+              >
+                  {voiceEnabled ? "Voice On" : "Voice Off"}
+              </Button>
             <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
               <Button className="rounded-full">Search</Button>
             </a>
