@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {useSearchParams} from 'next/navigation';
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 
 interface ChatMessage {
@@ -187,54 +188,54 @@ export default function Home(): JSX.Element {
             className="h-[calc(100%-100px)]"
         >
             <ResizablePanel defaultSize={100}>
-                <main className="flex-grow p-6 overflow-y-auto">
-                    <div className="space-y-4">
-                        {chatLog.map((msg, index) => (
-                            <div
-                                key={index}
-                                className={cn(
-                                    "flex flex-col rounded-xl p-4 max-w-fit max-h-fit transition-all duration-300 ease-in-out",
-                                    msg.isUser
-                                        ? "bg-primary text-primary-foreground ml-auto rounded-tr-none"
-                                        : "bg-secondary mr-auto rounded-tl-none",
-                                    msg.isUser ? 'md:max-w-[80%]' : 'md:max-w-[80%]' // Responsive max-width
-                                )}
-                            >
-                                {msg.codeLanguage ? (
-                                    <SyntaxHighlighter
-                                        language={msg.codeLanguage}
-                                        style={theme === 'dark' ? dark : atomDark}
-                                        className="text-sm leading-relaxed"
-                                    >
-                                        {msg.text}
-                                    </SyntaxHighlighter>
-                                ) : (
-                                    <div className="text-sm leading-relaxed">
-                                        <ReactMarkdown
-                                            components={{
-                                                a: ({ node, ...props }) => (
-                                                    <a {...props} style={{ color: 'blue' }} />
-                                                ),
-                                            }}
-                                        >
-                                            {msg.text}
-                                        </ReactMarkdown>
-                                    </div>
-                                )}
-                                <time
-                                    dateTime={msg.timestamp}
-                                    className={cn(
-                                        "text-xs self-end mt-2",
-                                        msg.isUser ? "text-primary-foreground/70" : "text-muted-foreground" // Change here
-                                    )}
-                                >
-                                    {msg.timestamp}
-                                </time>
-                            </div>
-                        ))}
-                        <div ref={chatLogRef} />
-                    </div>
-                </main>
+              <ScrollArea className="flex-grow p-6 overflow-y-auto">
+                <div className="space-y-4">
+                  {chatLog.map((msg, index) => (
+                      <div
+                          key={index}
+                          className={cn(
+                              "flex flex-col rounded-xl p-4 max-w-fit max-h-fit transition-all duration-300 ease-in-out",
+                              msg.isUser
+                                  ? "bg-primary text-primary-foreground ml-auto rounded-tr-none"
+                                  : "bg-secondary mr-auto rounded-tl-none",
+                              msg.isUser ? 'md:max-w-[80%]' : 'md:max-w-[80%]' // Responsive max-width
+                          )}
+                      >
+                          {msg.codeLanguage ? (
+                              <SyntaxHighlighter
+                                  language={msg.codeLanguage}
+                                  style={theme === 'dark' ? dark : atomDark}
+                                  className="text-sm leading-relaxed"
+                              >
+                                  {msg.text}
+                              </SyntaxHighlighter>
+                          ) : (
+                              <div className="text-sm leading-relaxed">
+                                  <ReactMarkdown
+                                      components={{
+                                          a: ({ node, ...props }) => (
+                                              <a {...props} style={{ color: 'blue' }} />
+                                          ),
+                                      }}
+                                  >
+                                      {msg.text}
+                                  </ReactMarkdown>
+                              </div>
+                          )}
+                          <time
+                              dateTime={msg.timestamp}
+                              className={cn(
+                                  "text-xs self-end mt-2",
+                                  msg.isUser ? "text-primary-foreground/70" : "text-muted-foreground" // Change here
+                              )}
+                          >
+                              {msg.timestamp}
+                          </time>
+                      </div>
+                  ))}
+                  <div ref={chatLogRef} />
+                </div>
+              </ScrollArea>
             </ResizablePanel>
         </ResizablePanelGroup>
 
