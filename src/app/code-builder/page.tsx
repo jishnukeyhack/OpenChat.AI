@@ -43,7 +43,8 @@ const CodeBuilderPage: React.FC<CodeBuilderPageProps> = ({searchParams}) => {
       });
 
       if (!response.ok) {
-        throw new Error(`Code generation failed: ${response.status} ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(`Code generation failed: ${response.status} ${response.statusText} - ${errorData.error || 'No details'}`);
       }
 
       const data = await response.json();

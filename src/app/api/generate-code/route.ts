@@ -4,14 +4,15 @@ export async function POST(req: NextRequest) {
     try {
         const { prompt } = await req.json();
 
-        // Replace with your code generation logic (e.g., calling a model, etc.)
-        const generatedCode = `
-// Example Generated Code
-function helloWorld() {
-  console.log("Hello, world!");
+        // Simple example using string manipulation to generate code
+        let generatedCode = `
+// Generated Code based on prompt: ${prompt}
+
+function ${prompt.replace(/\s+/g, '')}() {
+  console.log("${prompt}");
 }
 
-helloWorld();
+${prompt.replace(/\s+/g, '')}();
 `;
 
         return NextResponse.json({ code: generatedCode });
