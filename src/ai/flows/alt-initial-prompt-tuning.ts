@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview This file defines an alternative Genkit flow for OpenChat, incorporating various features
+ * @fileOverview This file defines a Genkit flow for OpenChat, incorporating various features
  * such as Hinglish support, real-time information retrieval, and creator details.
  *
  * - openChatFlow - The main flow function that takes user input and generates AI responses.
@@ -21,6 +21,10 @@ const OpenChatOutputSchema = z.object({
 export type OpenChatOutput = z.infer<typeof OpenChatOutputSchema>;
 
 export async function altOpenChat(input: OpenChatInput): Promise<OpenChatOutput> {
+  return openChatFlow(input);
+}
+
+export async function openChat(input: OpenChatInput): Promise<OpenChatOutput> {
   return openChatFlow(input);
 }
 
@@ -62,11 +66,11 @@ const prompt = ai.definePrompt({
 {{#if isGreeting}}
 Hi there! OpenChat Here 👋 How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need! 😊🎉
 {{else}}
-{{#if isHinglish}}
-Kya haal hai dost! OpenChat is here. Bol kya help chahiye tujhe? 🎉😎
-{{else}}
-Hi there! OpenChat Here 👋 How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need! 🎉😊
-{{/if}}
+  {{#if isHinglish}}
+    Kya haal hai dost! OpenChat is here. Bol kya help chahiye tujhe? 🎉😎
+  {{else}}
+    Hi there! OpenChat Here 👋 How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need! 🎉😊
+  {{/if}}
 {{/if}}
 
 {{#if conversationHistory}}
