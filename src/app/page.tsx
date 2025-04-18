@@ -1,13 +1,12 @@
-
 'use client';
 
-import {openChat} from '@/ai/flows/initial-prompt-tuning';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
-import {Circle, Search, Plus} from 'lucide-react';
-import React, {useState, useRef, useEffect, useCallback} from 'react';
-import {AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger} from "@/components/ui/alert-dialog"
-import {Textarea} from "@/components/ui/textarea"
+import { openChat } from '@/ai/flows/initial-prompt-tuning';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Circle, Search, Plus } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import ReactMarkdown from 'react-markdown';
@@ -20,9 +19,15 @@ import {
 import { useRouter } from 'next/navigation';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import {useSearchParams} from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useTheme } from "@/hooks/use-theme";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 // import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 // import { storage } from "@/lib/firebase";
 
@@ -47,12 +52,11 @@ export default function Home(): JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-    // Chat memory
+  // Chat memory
   const [conversationHistory, setConversationHistory] = useState<string>('');
   const { theme, setTheme } = useTheme();
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -92,28 +96,28 @@ export default function Home(): JSX.Element {
     const isGreeting = /^(hi|hello|hey|greetings|namaste|kem cho|kaise ho|sat sri akal)\b/i.test(message);
     try {
       const aiResponse = await fetch('/api/alt-chat', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-              message: message,
-              conversationHistory: updatedConversationHistory,
-              isGreeting: isGreeting
-          }),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: message,
+          conversationHistory: updatedConversationHistory,
+          isGreeting: isGreeting
+        }),
       }).then(res => res.json());
 
 
-            // Extract code language and code block from response
-            let codeLanguage: string | undefined;
-            let responseText = aiResponse.response;
-            const codeBlockRegex = /```(\w+)?\n([\s\S]*?)\n```/g;
-            let codeBlockMatch = codeBlockRegex.exec(aiResponse.response);
+      // Extract code language and code block from response
+      let codeLanguage: string | undefined;
+      let responseText = aiResponse.response;
+      const codeBlockRegex = /```(\w+)?\n([\s\S]*?)\n```/g;
+      let codeBlockMatch = codeBlockRegex.exec(aiResponse.response);
 
-            if (codeBlockMatch) {
-                codeLanguage = codeBlockMatch[1] || undefined;
-                responseText = codeBlockMatch[2];
-            }
+      if (codeBlockMatch) {
+        codeLanguage = codeBlockMatch[1] || undefined;
+        responseText = codeBlockMatch[2];
+      }
 
       const aiChatMessage: ChatMessage = {
         text: responseText,
@@ -123,8 +127,8 @@ export default function Home(): JSX.Element {
       };
       setChatLog(prev => [...prev, aiChatMessage]);
 
-            // Update conversation history with AI response
-            setConversationHistory(prev => prev + `\nAI: ${aiResponse.response}`);
+      // Update conversation history with AI response
+      setConversationHistory(prev => prev + `\nAI: ${aiResponse.response}`);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -149,41 +153,41 @@ export default function Home(): JSX.Element {
     chatLogRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatLog]);
 
-    const handleSearch = () => {
-        // Implement your search logic here
-        // This might involve calling an external search API
-        // and displaying the results in a modal or sidebar
-        toast({
-            title: "Search Initiated!",
-            description: "Searching the web for real-time updates...",
-        });
-        console.log("Search initiated for:", message);
-    };
+  const handleSearch = () => {
+    // Implement your search logic here
+    // This might involve calling an external search API
+    // and displaying the results in a modal or sidebar
+    toast({
+      title: "Search Initiated!",
+      description: "Searching the web for real-time updates...",
+    });
+    console.log("Search initiated for:", message);
+  };
 
   const handleCodeGenerate = () => {
     router.push(`/code-builder?prompt=${encodeURIComponent(message)}`);
   }
 
   const handleFileSelect = () => {
-      if (fileInputRef.current) {
-          fileInputRef.current.click();
-      }
+    // if (fileInputRef.current) {
+    //   fileInputRef.current.click();
+    // }
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-          toast({
-              title: "File Uploaded",
-              description: `Analyzing ${file.name}...`,
-          });
-          // Placeholder for image analysis or document processing
-          console.log("Performing analysis on:", file.name);
-      }
-      // Reset the input
-      if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-      }
+    const file = event.target.files?.[0];
+    if (file) {
+      toast({
+        title: "File Uploaded",
+        description: `Analyzing ${file.name}...`,
+      });
+      // Placeholder for image analysis or document processing
+      console.log("Performing analysis on:", file.name);
+    }
+    // Reset the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
 
@@ -199,9 +203,9 @@ export default function Home(): JSX.Element {
           <h1 className="text-2xl font-semibold tracking-tight">OpenChat.Ai</h1>
           <div className="flex items-center space-x-2">
             <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
-                <Button className="rounded-full">
-                    Search
-                </Button>
+              <Button className="rounded-full">
+                Search
+              </Button>
             </a>
             <Button onClick={toggleTheme} size="icon" variant="ghost">
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
@@ -210,58 +214,58 @@ export default function Home(): JSX.Element {
           </ div>
         </header>
         <div
-            className="flex-grow overflow-y-auto"
+          className="flex-grow overflow-y-auto"
         >
-            <div className="flex-grow p-6">
-                <div className="space-y-4">
-                  {chatLog.map((msg, index) => (
-                      <div
-                          key={index}
-                          className={cn(
-                              "flex flex-col rounded-xl p-4 max-w-fit max-h-fit transition-all duration-300 ease-in-out break-words",
-                              msg.isUser
-                                  ? "bg-primary text-primary-foreground ml-auto rounded-tr-none"
-                                  : "bg-secondary mr-auto rounded-tl-none",
-                              msg.isUser ? 'md:max-w-[80%]' : 'md:max-w-[80%]' // Responsive max-width
-                          )}
+          <div className="flex-grow p-6">
+            <div className="space-y-4">
+              {chatLog.map((msg, index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    "flex flex-col rounded-xl p-4 max-w-fit max-h-fit transition-all duration-300 ease-in-out break-words",
+                    msg.isUser
+                      ? "bg-primary text-primary-foreground ml-auto rounded-tr-none"
+                      : "bg-secondary mr-auto rounded-tl-none",
+                    msg.isUser ? 'md:max-w-[80%]' : 'md:max-w-[80%]' // Responsive max-width
+                  )}
+                >
+                  {msg.codeLanguage ? (
+                    <SyntaxHighlighter
+                      language={msg.codeLanguage}
+                      style={theme === 'dark' ? dark : atomDark}
+                      className="text-sm leading-relaxed rounded-md overflow-x-auto"
+                    >
+                      {msg.text}
+                    </SyntaxHighlighter>
+                  ) : (
+                    <div className="text-sm leading-relaxed">
+                      <ReactMarkdown
+                        components={{
+                          a: ({ node, ...props }) => (
+                            <a {...props} style={{ color: 'blue' }} />
+                          ),
+                        }}
                       >
-                          {msg.codeLanguage ? (
-                              <SyntaxHighlighter
-                                  language={msg.codeLanguage}
-                                  style={theme === 'dark' ? dark : atomDark}
-                                  className="text-sm leading-relaxed rounded-md overflow-x-auto"
-                              >
-                                  {msg.text}
-                              </SyntaxHighlighter>
-                          ) : (
-                              <div className="text-sm leading-relaxed">
-                                  <ReactMarkdown
-                                      components={{
-                                          a: ({ node, ...props }) => (
-                                              <a {...props} style={{ color: 'blue' }} />
-                                          ),
-                                      }}
-                                  >
-                                      {msg.text}
-                                  </ReactMarkdown>
-                              </div>
-                          )}
-                          <time
-                              dateTime={msg.timestamp}
-                              className={cn(
-                                  "text-xs self-end mt-2",
-                                  msg.isUser ? "text-primary-foreground/70" : "text-muted-foreground" // Change here
-                              )}
-                          >
-                              {msg.timestamp}
-                          </time>
-                      </div>
-                  ))}
-                  <div ref={chatLogRef} />
+                        {msg.text}
+                      </ReactMarkdown>
+                    </div>
+                  )}
+                  <time
+                    dateTime={msg.timestamp}
+                    className={cn(
+                      "text-xs self-end mt-2",
+                      msg.isUser ? "text-primary-foreground/70" : "text-muted-foreground" // Change here
+                    )}
+                  >
+                    {msg.timestamp}
+                  </time>
                 </div>
-              </div>
+              ))}
+              <div ref={chatLogRef} />
             </div>
-        
+          </div>
+        </div>
+
 
         <footer className="p-6 border-t border-muted">
           <div className="container mx-auto flex items-center">
@@ -283,17 +287,39 @@ export default function Home(): JSX.Element {
                 }
               }}
             />
-            
-               <Button
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
                   variant="ghost"
                   size="icon"
                   onClick={handleFileSelect}
                   className="ml-2"
-              >
+                >
                   <Plus className="h-4 w-4 text-muted-foreground" />
-              </Button>
-             <Button className="rounded-full" onClick={handleSend}>Send</Button>
-             <Button className="rounded-full" onClick={handleCodeGenerate}>Code</Button>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
+                  Attach Image
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
+                  Attach Document
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
+                  Attach File
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileUpload}
+            />
+
+            <Button className="rounded-full" onClick={handleSend}>Send</Button>
+            <Button className="rounded-full" onClick={handleCodeGenerate}>Code</Button>
           </div>
         </footer>
       </div>
