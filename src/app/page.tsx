@@ -63,7 +63,13 @@ const isValidImageUrl = (url: string) => {
 
 export default function Home(): JSX.Element {
   const [message, setMessage] = useState('');
-  const [chatLog, setChatLog] = useState<ChatMessage[]>([]);
+  const [chatLog, setChatLog] = useState<ChatMessage[]>(() => {
+    if (typeof window !== 'undefined') {
+      const storedChatLog = localStorage.getItem('chatLog');
+      return storedChatLog ? JSON.parse(storedChatLog) : [];
+    }
+    return [];
+  });
   const chatLogRef = useRef<HTMLDivElement>(null);
   const {toast} = useToast();
   const router = useRouter();
@@ -372,8 +378,8 @@ export default function Home(): JSX.Element {
 
     useEffect(() => {
         // Clear chat log on component mount (page refresh)
-        localStorage.removeItem('chatLog');
-        setChatLog([]);
+        // localStorage.removeItem('chatLog');
+        // setChatLog([]);
     }, []);
 
     const toggleVoice = () => {
@@ -386,6 +392,11 @@ export default function Home(): JSX.Element {
             return newValue;
         });
     };
+
+    useEffect(() => {
+      // Store chat log in localStorage whenever it changes
+      localStorage.setItem('chatLog', JSON.stringify(chatLog));
+    }, [chatLog]);
 
   return (
     <>
@@ -582,3 +593,4 @@ export default function Home(): JSX.Element {
     </>
   );
 }
+
