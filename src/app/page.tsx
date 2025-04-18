@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/resizable';
 import {useRouter} from 'next/navigation';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import {dark, dracula, atomDark} from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {useSearchParams} from 'next/navigation';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {useTheme} from '@/hooks/use-theme';
@@ -247,8 +247,8 @@ export default function Home(): JSX.Element {
   };
 
   const handleCodeGenerate = () => {
-     // Store the current chat log in localStorage
-     localStorage.setItem('chatLog', JSON.stringify(chatLog));
+    // Store the current chat log in localStorage
+    localStorage.setItem('chatLog', JSON.stringify(chatLog));
     router.push(`/code-builder?prompt=${encodeURIComponent(message)}`);
   };
 

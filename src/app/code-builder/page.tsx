@@ -11,6 +11,13 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from "@/hooks/use-theme";
 
+interface ChatMessage {
+  text: string;
+  isUser: boolean;
+  timestamp: string;
+  codeLanguage?: string;
+}
+
 const CodeBuilderPage = () => {
   const [prompt, setPrompt] = useState('');
   const [language, setLanguage] = useState('');
@@ -22,13 +29,21 @@ const CodeBuilderPage = () => {
   const { theme } = useTheme();
   const [previousCode, setPreviousCode] = useState('');
     // Retrieve the chatLog from localStorage
-    const [chatLog, setChatLog] = useState(() => {
+    const [chatLog, setChatLog] = useState<ChatMessage[]>(() => {
       if (typeof window !== 'undefined') {
         const storedChatLog = localStorage.getItem('chatLog');
         return storedChatLog ? JSON.parse(storedChatLog) : [];
       }
       return [];
     });
+
+    // Clear chat log from localStorage on component unmount
+    useEffect(() => {
+      return () => {
+        localStorage.removeItem('chatLog');
+      };
+    }, []);
+
 
   useEffect(() => {
     if (searchParams) {
