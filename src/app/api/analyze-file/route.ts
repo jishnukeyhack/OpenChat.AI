@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       });
     }
 
-    return NextResponse.json({analysis: analysisResult.analysis});
+    return NextResponse.json({analysis: analysisResult.response});
   } catch (e) {
     console.error(e);
     return NextResponse.json({error: (e as Error).message}, {status: 500});

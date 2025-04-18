@@ -98,38 +98,64 @@ export default function Home(): JSX.Element {
     document.body.setAttribute('data-theme', theme);
   }, [theme]);
 
-  const handleSend = async () => {
-    if (!message.trim()) return;
+   const handleSend = async () => {
+    if (!message.trim() && !selectedFile) return;
+
+    const userMessageText = message.trim() ? message : (selectedFile ? `Uploaded ${selectedFile.name}` : '');
 
     const userMessage: ChatMessage = {
-      text: message,
+      text: userMessageText,
       isUser: true,
       timestamp: formatTimestamp(new Date()),
     };
     setChatLog(prev => [...prev, userMessage]);
 
     // Update conversation history
-    const updatedConversationHistory = conversationHistory + `\nUser: ${message}`;
+    const updatedConversationHistory = conversationHistory + `\nUser: ${userMessageText}`;
     setConversationHistory(updatedConversationHistory);
-    const isGreeting = /^(hi|hello|hey|greetings|namaste|kem cho|kaise ho|sat sri akal)\b/i.test(message);
-    try {
-      const aiResponse = await fetch('/api/alt-chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: message,
-          conversationHistory: updatedConversationHistory,
-          isGreeting: isGreeting,
-        }),
-      }).then(res => res.json());
 
+    try {
+      let aiResponse;
+
+      if (selectedFile) {
+        // Send the file to the analyze-file API
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('message', message);  // Send the message along with the file
+
+        const response = await fetch('/api/analyze-file', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`File analysis failed: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        aiResponse = data.analysis;
+      } else {
+        // Use the existing alt-chat API for text-based messages
+        const isGreeting = /^(hi|hello|hey|greetings|namaste|kem cho|kaise ho|sat sri akal)\b/i.test(message);
+        const altChatResponse = await fetch('/api/alt-chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: message,
+            conversationHistory: updatedConversationHistory,
+            isGreeting: isGreeting,
+          }),
+        }).then(res => res.json());
+
+        aiResponse = altChatResponse.response;
+      }
       // Extract code language and code block from response
       let codeLanguage: string | undefined;
-      let responseText = aiResponse.response;
+      let responseText = aiResponse;
       const codeBlockRegex = /```(\w+)?\n([\s\S]*?)\n```/g;
-      let codeBlockMatch = codeBlockRegex.exec(aiResponse.response);
+      let codeBlockMatch = codeBlockRegex.exec(aiResponse);
 
       if (codeBlockMatch) {
         codeLanguage = codeBlockMatch[1] || undefined;
@@ -145,7 +171,7 @@ export default function Home(): JSX.Element {
       setChatLog(prev => [...prev, aiChatMessage]);
 
       // Update conversation history with AI response
-      setConversationHistory(prev => prev + `\nAI: ${aiResponse.response}`);
+      setConversationHistory(prev => prev + `\nAI: ${aiResponse}`);
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -162,10 +188,11 @@ export default function Home(): JSX.Element {
       setChatLog(prev => [...prev, errorChatMessage]);
     } finally {
       setMessage(''); // Clear the input field
-      setImageUrl('');
       setSelectedFile(null);
+      setImageUrl('');
     }
   };
+
 
   // Scroll to bottom of chat log on new message
   useEffect(() => {
