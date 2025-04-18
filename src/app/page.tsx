@@ -183,12 +183,10 @@ export default function Home(): JSX.Element {
             </Button>
           </ div>
         </header>
-        <ResizablePanelGroup
-            direction="horizontal"
-            className="h-[calc(100%-100px)]"
+        <div
+            className="flex-grow overflow-y-auto"
         >
-            <ResizablePanel defaultSize={100}>
-              <ScrollArea className="flex-grow p-6 overflow-y-auto">
+            <div className="flex-grow p-6">
                 <div className="space-y-4">
                   {chatLog.map((msg, index) => (
                       <div
@@ -235,9 +233,9 @@ export default function Home(): JSX.Element {
                   ))}
                   <div ref={chatLogRef} />
                 </div>
-              </ScrollArea>
-            </ResizablePanel>
-        </ResizablePanelGroup>
+              </div>
+            </div>
+        
 
         <footer className="p-6 border-t border-muted">
           <div className="container mx-auto flex items-center">
