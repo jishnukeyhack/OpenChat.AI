@@ -1,3 +1,4 @@
+
 'use client';
 
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
@@ -283,8 +284,6 @@ export default function Home(): JSX.Element {
               }}
             />
             
-            <Button className="rounded-full" onClick={handleSend}>Send</Button>
-             <Button className="rounded-full" onClick={handleCodeGenerate}>Code</Button>
                <Button
                   variant="ghost"
                   size="icon"
@@ -293,15 +292,12 @@ export default function Home(): JSX.Element {
               >
                   <Plus className="h-4 w-4 text-muted-foreground" />
               </Button>
-              <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: 'none' }}
-                  onChange={handleFileUpload}
-              />
+             <Button className="rounded-full" onClick={handleSend}>Send</Button>
+             <Button className="rounded-full" onClick={handleCodeGenerate}>Code</Button>
           </div>
         </footer>
       </div>
     </>
   );
 }
+
