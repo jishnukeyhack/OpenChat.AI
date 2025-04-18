@@ -25,8 +25,24 @@ export async function openChat(input: OpenChatInput): Promise<OpenChatOutput> {
   return openChatFlow(input);
 }
 
+const search = ai.defineTool({
+  name: 'search',
+  description: 'Searches the web for relevant information.',
+  inputSchema: z.object({
+    query: z.string().describe('The search query.')
+  }),
+  outputSchema: z.string()
+}, async input => {
+  // Replace this with your actual search implementation.
+  // For example, you could use a web scraping library or a search API.
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  console.log(`Simulating search for: ${input.query}`);
+  return `Search results for ${input.query}: This is a mock search result.`;
+});
+
 const prompt = ai.definePrompt({
   name: 'openChatPrompt',
+  tools: [search],
   input: {
     schema: z.object({
       message: z.string().describe('The user message to be processed.'),
@@ -38,10 +54,7 @@ const prompt = ai.definePrompt({
       response: z.string().describe('The AI generated response.'),
     }),
   },
-  prompt: `You are OpenChat, an AI assistant designed to provide helpful and informative responses. Focus on conciseness and relevance. If the user's question requires real-time information:
-
-1.  First, use search tools to gather relevant information from the web.
-2.  Then, summarize the key points and provide the user with links to the sources in blue color.
+  prompt: `You are OpenChat, an AI assistant designed to provide helpful and informative responses. Focus on conciseness and relevance. 
 
 {{#if isGreeting}}Hi there! OpenChat Here How can I assist you today? I'm ready to answer your questions, provide information, or help in any way I can. Just let me know what you need!{{else}} {{/if}}
 
@@ -62,6 +75,7 @@ Make sure every sentence should have a proper and clear meaning.
 If the user's question asks about live information, such as live news, trending topics, or live scores, use the available tools to get the current information from the web. Be elaborate and descriptive. Also, if the user is asking question in other language convert it to english.
 If the user replies or ask in any other language respond in same language.
 If the user ask about any url or link provide it in blue colour.
+
 If the user asks 'tumhara baap kon hai' respond with the details of Jishnu Chauhan.
 If the user asks 'who created you' or any similar questions about your origin, respond with details about Jishnu Chauhan. Refrain from answering in code formats, unless explicitly asked.`,
 });
@@ -78,7 +92,16 @@ const openChatFlow = ai.defineFlow<
   async input => {
     const isGreeting = /^(hi|hello|hey|greetings)\b/i.test(input.message);
     const creatorInquiry = /(who created you|who built you|who is your creator|creator|origin|tumhara baap kon hai)/i.test(input.message);
+    
+    let aiResponse;
+    if (/(live news|trending topics|live scores)/i.test(input.message)) {
+      const searchResult = await search({ query: input.message });
+      aiResponse = `I found some information on the web:\n${searchResult}`;
+    }
+
     const {output} = await prompt({...input, isGreeting, creatorInquiry});
-    return output!;
+    return {
+      response: aiResponse || output!.response
+    };
   }
 );

@@ -82,7 +82,7 @@ export default function Home(): JSX.Element {
     try {
       const aiResponse = await openChat({
         message: message,
-        conversationHistory: conversationHistory,
+        conversationHistory: updatedConversationHistory,
       });
 
             // Extract code language and code block from response
