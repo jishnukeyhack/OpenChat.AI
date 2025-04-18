@@ -1,3 +1,4 @@
+
 'use client';
 
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
@@ -373,27 +374,25 @@ export default function Home(): JSX.Element {
       // Check if this is a page refresh
       const isReload = sessionStorage.getItem('reloaded');
   
-      if (isReload) {
-        // If it's a refresh, clear the chat log
-        localStorage.removeItem('chatLog');
-        sessionStorage.removeItem('reloaded');
-        setChatLog([]);
-      } else {
-        // Otherwise, load the chat log from localStorage
-        const storedChatLog = localStorage.getItem('chatLog');
-        if (storedChatLog) {
-          setChatLog(JSON.parse(storedChatLog));
-        }
+      
+      const storedChatLog = localStorage.getItem('chatLog');
+      if (storedChatLog) {
+        setChatLog(JSON.parse(storedChatLog));
       }
   
       // Set a flag in session storage to indicate that the page has been loaded
-      sessionStorage.setItem('reloaded', 'true');
+     if (!isReload) {
+        sessionStorage.setItem('reloaded', 'true');
+     }
     }, []);
 
     useEffect(() => {
-        // Clear chat log on component mount (page refresh)
-        // localStorage.removeItem('chatLog');
-        // setChatLog([]);
+       const isReload = sessionStorage.getItem('reloaded');
+       if (isReload) {
+            localStorage.removeItem('chatLog');
+           sessionStorage.removeItem('reloaded');
+           setChatLog([]);
+       }
     }, []);
 
     const toggleVoice = () => {
