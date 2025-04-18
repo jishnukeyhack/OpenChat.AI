@@ -3,7 +3,7 @@
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
-import {Circle, Search, Plus, ImagePlus, File as FileIcon} from 'lucide-react';
+import {Circle, Search, Plus, ImagePlus, File as FileIcon, Volume2, VolumeX} from 'lucide-react';
 import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {
   AlertDialog,
@@ -19,7 +19,7 @@ import {Textarea} from '@/components/ui/textarea';
 import {useToast} from '@/hooks/use-toast';
 import {cn} from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
-import {Sun, Moon, Volume2, VolumeX} from 'lucide-react';
+import {Sun, Moon} from 'lucide-react';
 import {
   ResizableHandle,
   ResizablePanel,
@@ -204,6 +204,10 @@ export default function Home(): JSX.Element {
   const playAudio = (text: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
+        if (!voiceEnabled) {
+            speechSynthesis.cancel(); // Stop current utterance if voice disabled
+            return;
+        }
       speechSynthesis.speak(utterance);
     } else {
       console.warn('Text-to-speech not supported in this browser.');
@@ -352,7 +356,14 @@ export default function Home(): JSX.Element {
   }, []);
 
     const toggleVoice = () => {
-        setVoiceEnabled(prev => !prev);
+        setVoiceEnabled(prev => {
+            const newValue = !prev;
+            setVoiceEnabled(newValue);
+            if (!newValue) {
+                speechSynthesis.cancel(); // Cancel any ongoing speech
+            }
+            return newValue;
+        });
     };
 
   return (
