@@ -3,7 +3,7 @@
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
-import {Circle, Search, Plus, ImagePlus, File as FileIcon, Volume2, VolumeX} from 'lucide-react';
+import {Circle, Search, Plus, ImagePlus, File as FileIcon, Volume2, VolumeX, Mic} from 'lucide-react';
 import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {
   AlertDialog,
@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/resizable';
 import {useRouter} from 'next/navigation';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import {dark, dracula, atomDark} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import {useSearchParams} from 'next/navigation';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {useTheme} from '@/hooks/use-theme';
@@ -370,11 +370,25 @@ export default function Home(): JSX.Element {
 
    // Load chat log from localStorage on component mount
    useEffect(() => {
-    const storedChatLog = localStorage.getItem('chatLog');
-    if (storedChatLog) {
-      setChatLog(JSON.parse(storedChatLog));
-    }
-  }, []);
+      // Check if this is a page refresh
+      const isReload = sessionStorage.getItem('reloaded');
+  
+      if (isReload) {
+        // If it's a refresh, clear the chat log
+        localStorage.removeItem('chatLog');
+        sessionStorage.removeItem('reloaded');
+        setChatLog([]);
+      } else {
+        // Otherwise, load the chat log from localStorage
+        const storedChatLog = localStorage.getItem('chatLog');
+        if (storedChatLog) {
+          setChatLog(JSON.parse(storedChatLog));
+        }
+      }
+  
+      // Set a flag in session storage to indicate that the page has been loaded
+      sessionStorage.setItem('reloaded', 'true');
+    }, []);
 
     useEffect(() => {
         // Clear chat log on component mount (page refresh)
