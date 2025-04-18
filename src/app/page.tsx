@@ -17,6 +17,9 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { useRouter } from 'next/navigation';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
 
 
 interface ChatMessage {
@@ -196,17 +199,13 @@ export default function Home(): JSX.Element {
                                 )}
                             >
                                 {msg.codeLanguage ? (
-                                    <div className="text-sm leading-relaxed">
-                                        <ReactMarkdown
-                                            components={{
-                                                a: ({ node, ...props }) => (
-                                                    <a {...props} style={{ color: 'blue' }} />
-                                                ),
-                                            }}
-                                        >
-                                            {msg.text}
-                                        </ReactMarkdown>
-                                    </div>
+                                    <SyntaxHighlighter
+                                        language={msg.codeLanguage}
+                                        style={theme === 'dark' ? dark : atomDark}
+                                        className="text-sm leading-relaxed"
+                                    >
+                                        {msg.text}
+                                    </SyntaxHighlighter>
                                 ) : (
                                     <div className="text-sm leading-relaxed">
                                         <ReactMarkdown
