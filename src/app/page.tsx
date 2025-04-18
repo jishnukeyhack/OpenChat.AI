@@ -204,10 +204,25 @@ export default function Home(): JSX.Element {
   const playAudio = (text: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US'; // Set default language
         if (!voiceEnabled) {
             speechSynthesis.cancel(); // Stop current utterance if voice disabled
             return;
         }
+        // Improve Hinglish pronunciation - basic substitutions
+        const hinglishAdjustedText = text
+            .replace(/kya/gi, 'kya')
+            .replace(/hai/gi, 'hai')
+            .replace(/dost/gi, 'dost')
+            .replace(/yaar/gi, 'yaar')
+            .replace(/bhai/gi, 'bhai');
+
+        utterance.text = hinglishAdjustedText;
+
+        // Prevent reading emojis
+        utterance.text = utterance.text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
+
+
       speechSynthesis.speak(utterance);
     } else {
       console.warn('Text-to-speech not supported in this browser.');
