@@ -176,6 +176,9 @@ export default function Home(): JSX.Element {
       setConversationHistory(prev => prev + `\nAI: ${aiResponse}`);
 
       //Text-to-speech
+      if (voiceEnabled) {
+        playAudio(aiResponse);
+      }
        
     } catch (error: any) {
       toast({
@@ -195,6 +198,15 @@ export default function Home(): JSX.Element {
       setMessage(''); // Clear the input field
       setSelectedFile(null);
       setImageUrl('');
+    }
+  };
+
+  const playAudio = (text: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      speechSynthesis.speak(utterance);
+    } else {
+      console.warn('Text-to-speech not supported in this browser.');
     }
   };
 
