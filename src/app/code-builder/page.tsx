@@ -20,6 +20,7 @@ const CodeBuilderPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
+  const [previousCode, setPreviousCode] = useState('');
 
   useEffect(() => {
     if (searchParams) {
@@ -32,11 +33,11 @@ const CodeBuilderPage = () => {
 
   const generateCodeFromPrompt = async () => {
     setGeneratingCode(true);
-    setCodeResult(null);
     try {
-      const response = await generateCode({prompt, language});
+      const response = await generateCode({prompt, language, previousCode});
 
       setCodeResult(response.code);
+      setPreviousCode(response.code);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -64,6 +65,12 @@ const CodeBuilderPage = () => {
           placeholder="Enter the programming language (optional)..."
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
+          className="mb-2"
+        />
+         <Textarea
+          placeholder="Previous Code (optional)..."
+          value={previousCode}
+          readOnly
           className="mb-2"
         />
         <Button onClick={generateCodeFromPrompt} disabled={generatingCode} className="mb-4">
