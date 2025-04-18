@@ -18,11 +18,16 @@ const CodeBuilderPage: React.FC<CodeBuilderPageProps> = ({searchParams}) => {
   const { toast } = useToast();
   const router = useRouter();
 
+  const searchParamsHook = useSearchParams();
+
   useEffect(() => {
-    if (searchParams && searchParams['prompt']) {
-      setPrompt(String(searchParams['prompt']));
+    if (searchParamsHook) {
+      const promptValue = searchParamsHook.get('prompt');
+      if(promptValue){
+        setPrompt(String(promptValue));
+      }
     }
-  }, [searchParams]);
+  }, [searchParamsHook]);
 
 
   const generateCode = async (prompt: string) => {
