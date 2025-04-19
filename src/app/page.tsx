@@ -61,6 +61,10 @@ const isValidImageUrl = (url: string) => {
   }
 };
 
+const CHAT_LOG_STORAGE_KEY = 'chatLog';
+const LAST_ACTIVE_STORAGE_KEY = 'lastActive';
+const INACTIVE_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+
 export default function Home(): JSX.Element {
   const [message, setMessage] = useState('');
   const [chatLog, setChatLog] = useState<ChatMessage[]>(() => {
@@ -83,7 +87,7 @@ export default function Home(): JSX.Element {
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the selected file
   const [imageUrl, setImageUrl] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
