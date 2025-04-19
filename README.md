@@ -70,7 +70,7 @@ Fork this repo, make your changes, and open a pull request!
 
 ## 📬 Contact
 
-Made with ❤️ by **[Jishnu Chauhan]([https://github.com/jishnukeyhack])**  
+Made with ❤️ by **[Jishnu Chauhan](https://github.com/jishnukeyhack)**  
 📧 Email: `hello@openchat.ai`  
 🐦 Twitter: [@yourhandle](https://twitter.com/yourhandle)
 
