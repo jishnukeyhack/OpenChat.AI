@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -10,6 +9,7 @@ import {generateCode} from '@/ai/flows/code-builder-tuning';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark, dracula, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from "@/hooks/use-theme";
+import Image from 'next/image';
 
 interface ChatMessage {
   text: string;
@@ -23,7 +23,6 @@ const CodeBuilderPage = () => {
   const [language, setLanguage] = useState('');
   const [codeResult, setCodeResult] = useState<string | null>(null);
   const [generatingCode, setGeneratingCode] = useState(false);
-  const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
@@ -62,11 +61,6 @@ const CodeBuilderPage = () => {
       setCodeResult(response.code);
       setPreviousCode(response.code);
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Code Generation Error",
-        description: error.message,
-      });
       console.error('Code generation failed:', error);
       setCodeResult('Error generating code.');
     } finally {
@@ -74,9 +68,22 @@ const CodeBuilderPage = () => {
     }
   };
 
+  const handleBackToChat = () => {
+    router.push('/'); // Navigate back to the main chat page
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1 className="text-2xl font-semibold mb-4">Code Builder</h1>
+      <div className="flex items-center justify-center mb-4 cursor-pointer" onClick={handleBackToChat}>
+        <Image
+          src="/openchat-logo.png"
+          alt="OpenChat.ai Logo"
+          width={40}
+          height={40}
+          className="mr-2"
+        />
+        <h1 className="text-2xl font-semibold">Code Builder</h1>
+      </div>
       <div className="w-full max-w-2xl p-4">
         <Textarea
           placeholder="Describe what you want to build..."
@@ -99,8 +106,8 @@ const CodeBuilderPage = () => {
             </SyntaxHighlighter>
           </div>
         )}
-        <Button onClick={() => router.back()} variant="outline">
-          Back to Chat
+        <Button onClick={handleBackToChat} variant="outline">
+          Back to Main Chat
         </Button>
       </div>
     </div>
