@@ -8,6 +8,7 @@ import {Toaster} from '@/components/ui/toaster';
 import {auth} from '@/lib/firebase';
 import {useEffect, useState} from 'react';
 import {signOut} from 'firebase/auth';
+import {OpenChat} from '@lobehub/icons';
 
 // export const metadata: Metadata = {
 //   title: 'OpenChat.Ai',
@@ -73,11 +74,8 @@ export default function RootLayout({
         <nav className="p-4 border-b">
           <div className="container mx-auto flex justify-between items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <img
-                src="/openchat-logo.png"
-                alt="OpenChat.ai"
-                className="h-8 w-8"
-              />
+              
+              <OpenChat.Combine size={40} type={'color'} />
               <span className="text-2xl font-bold">OpenChat.ai</span>
             </Link>
             <div>
@@ -105,3 +103,4 @@ export default function RootLayout({
     </html>
   );
 }
+

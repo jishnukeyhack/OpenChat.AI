@@ -1,5 +1,6 @@
 'use client';
 
+import {OpenChat} from '@lobehub/icons';
 import {openChat} from '@/ai/flows/initial-prompt-tuning';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
@@ -422,7 +423,11 @@ export default function Home(): JSX.Element {
         )}
       >
         <header className="px-6 py-3 border-b border-muted flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight">OpenChat.Ai</h1>
+          
+          <div className="flex items-center space-x-2">
+          <OpenChat.Combine size={40} type={'color'} />
+            <span className="text-2xl font-bold">OpenChat.Ai</span>
+          </div>
           <div className="flex items-center space-x-2">
             <Button
                   onClick={toggleVoice}
