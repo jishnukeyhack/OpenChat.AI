@@ -608,6 +608,7 @@ export default function Home(): JSX.Element {
               Code
             </Button>
           </div>
+	  <p className="text-xs text-muted-foreground mt-1">OpenChat Can Make Mistakes, so Double Check It</p>
         </footer>
       </div>
     </>
