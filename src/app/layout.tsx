@@ -1,6 +1,6 @@
 'use client';
 
-import type {Metadata} from 'next';
+import type {Metadata} from 'next/font';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
@@ -8,7 +8,6 @@ import {Toaster} from '@/components/ui/toaster';
 import {auth} from '@/lib/firebase';
 import {useEffect, useState} from 'react';
 import {signOut} from 'firebase/auth';
-import {OpenChat} from '@lobehub/icons';
 
 // export const metadata: Metadata = {
 //   title: 'OpenChat.Ai',
@@ -74,9 +73,8 @@ export default function RootLayout({
         <nav className="p-4 border-b">
           <div className="container mx-auto flex justify-between items-center">
             <Link href="/" className="flex items-center space-x-2">
+              {/* <OpenChat.Combine size={40} type={'color'} /> */}
               
-              <OpenChat.Combine size={40} type={'color'} />
-              <span className="text-2xl font-bold" style={{marginLeft:'-0.5em'}}>.Ai</span>
             </Link>
             <div>
               {user ? (
