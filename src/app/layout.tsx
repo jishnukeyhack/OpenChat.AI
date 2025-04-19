@@ -76,7 +76,7 @@ export default function RootLayout({
             <Link href="/" className="flex items-center space-x-2">
               
               <OpenChat.Combine size={40} type={'color'} />
-              <span className="text-2xl font-bold">OpenChat.ai</span>
+              <span className="text-2xl font-bold">.Ai</span>
             </Link>
             <div>
               {user ? (
@@ -103,4 +103,3 @@ export default function RootLayout({
     </html>
   );
 }
-
