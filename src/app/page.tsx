@@ -1,7 +1,6 @@
 'use client';
 
 import {OpenChat} from '@lobehub/icons';
-import {openChat} from '@/ai/flows/initial-prompt-tuning';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Circle, Search, Plus, ImagePlus, File as FileIcon, Volume2, VolumeX, Mic} from 'lucide-react';
@@ -39,6 +38,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {analyzeFile} from '@/ai/flows/analyze-file-flow'; // Import analyzeImage
+import {openChat} from '@/ai/flows/initial-prompt-tuning'; // Import analyzeImage
 
 interface ChatMessage {
   text: string;
@@ -614,4 +614,3 @@ export default function Home(): JSX.Element {
     </>
   );
 }
-

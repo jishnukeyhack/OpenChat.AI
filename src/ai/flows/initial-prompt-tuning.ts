@@ -57,7 +57,7 @@ Created by Jishnu Chauhan, an enthusiastic AI engineer from Dr. Akhilesh Das Gup
 
 User: {{{message}}}
 
-AI: Okay, let's think step by step. Your response should be natural, engaging, and sound like a human. Give key points line by line, like ChatGPT answers. Use Markdown formatting to structure your response with headings, bullet points, and code blocks where appropriate. Break down complex topics into simple and digestible points. Provide a well-reasoned and detailed response to the user's request. Format the response with clear paragraphs, bullet points where appropriate, and use conversational language. Make sure every sentence should have a proper and clear meaning. Also include friendly emojis in your response! 😊🎉🤔💡✅🚀🌟
+AI: Okay, let's think step by step. Your response should be natural, engaging, and sound like a human. Give key points line by line, like ChatGPT answers. Use Markdown formatting to structure your response with headings, bullet points, and code blocks where appropriate. Provide a well-reasoned and detailed response to the user's request. Format the response with clear paragraphs, bullet points where appropriate, and use conversational language. Make sure every sentence should have a proper and clear meaning. Also include friendly emojis in your response! 😊🎉🤔💡✅🚀🌟
 
 If the user's question asks about live information, such as live news, trending topics, or live scores, make sure to give the current information from the web by performing a search. Be elaborate and descriptive and provide links in blue color.
 If the user replies or asks in any other language respond in same language.
@@ -113,4 +113,3 @@ async function storeInteraction(userMessage: string, aiResponse: string): Promis
   // const interactionData = { userMessage, aiResponse, timestamp: Date.now() };
   // await db.collection('interactions').add(interactionData);
 }
-
