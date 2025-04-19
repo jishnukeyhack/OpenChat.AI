@@ -425,8 +425,8 @@ export default function Home(): JSX.Element {
         <header className="px-6 py-3 border-b border-muted flex items-center justify-between">
           
           <div className="flex items-center space-x-2">
-          <OpenChat.Color size={40}  />
-            <span className="text-2xl font-bold">OpenChat</span>
+          <OpenChat.Avatar size={40}  />
+            <span className="text-2xl font-bold">OpenChat.AI</span>
           </div>
           <div className="flex items-center space-x-2">
             <Button

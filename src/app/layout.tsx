@@ -8,6 +8,7 @@ import {Toaster} from '@/components/ui/toaster';
 import {auth} from '@/lib/firebase';
 import {useEffect, useState} from 'react';
 import {signOut} from 'firebase/auth';
+import { OpenChat } from '@lobehub/icons';
 
 // export const metadata: Metadata = {
 //   title: 'OpenChat.Ai',
@@ -74,7 +75,7 @@ export default function RootLayout({
           <div className="container mx-auto flex justify-between items-center">
             <Link href="/" className="flex items-center space-x-2">
               {/* <OpenChat.Combine size={40} type={'color'} /> */}
-              
+              <OpenChat.Combine size={40} type={'color'} />
             </Link>
             <div>
               {user ? (
